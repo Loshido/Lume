@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "PORT=80 bun run --watch src/index.ts"
+  },
+  "dependencies": {
+    "@elysiajs/swagger": "^1.1.6",
+    "@types/pg": "^8.11.10",
+    "case": "^1.6.3",
+    "consola": "^3.3.0",
+    "elysia": "latest",
+    "pg": "^8.13.1",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "module": "src/index.js"
+}
