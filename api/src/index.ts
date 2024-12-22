@@ -7,6 +7,7 @@ const port = fromEnv('PORT', '80')
 import collections from "./collections"
 import auth from "./auth";
 import { fromEnv } from "lib:utils/etc";
+import media from "./media";
 
 const app = new Elysia()
     .use(
@@ -18,13 +19,17 @@ const app = new Elysia()
                 },
                 tags: [
                     {
+                        name: "Authentification",
+                        description: "Endpoint for manager authentification"
+                    },
+                    {
                         name: "Content",
                         description: "Endpoint for content management"
                     },
                     {
-                        name: "Authentification",
-                        description: "Endpoint for manager authentification"
-                    }
+                        name: "Media",
+                        description: "Endpoint for media management"
+                    },
                 ]
             },
             scalarConfig: {
@@ -33,8 +38,9 @@ const app = new Elysia()
             },
         })
     )
-    .use(collections)
     .use(auth)
+    .use(collections)
+    .use(media)
     .listen(port);
 
 consola.success(`Lume's API listen at ${app.server?.hostname}:${app.server?.port}`);

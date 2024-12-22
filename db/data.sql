@@ -21,3 +21,10 @@ CREATE TABLE users(
     permission VARCHAR(3) DEFAULT '000',
     password TEXT NOT NULL
 );
+
+CREATE TABLE media(
+    id TEXT PRIMARY KEY,
+    description TEXT,
+    origin TEXT references users(id),
+    createdat TIMESTAMP DEFAULT NOW()
+);
