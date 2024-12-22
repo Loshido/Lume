@@ -2,7 +2,8 @@ import { fromEnv } from "lib:utils/etc";
 import { Pool } from "pg";
 
 const DEFAULT_CONFIGURATION = {
-    host: 'localhost',
+    host: fromEnv('POSTGRES_HOST', 'localhost'),
+    port: 5432,
     user: 'api',
     database: 'postgres',
     max: 50

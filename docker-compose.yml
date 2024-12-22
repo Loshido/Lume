@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: db
     image: "postgres:alpine"
     restart: always
     env_file:
@@ -11,7 +12,28 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
+    networks:
+      - lume
   redis:
+    container_name: redis
     image: "redis:alpine"
     ports:
       - 6379:6379 
+  lume-api:
+    container_name: lume-api
+    build: 
+      context: ./api
+    ports:
+      - 80:80
+    env_file:
+      - .env
+    environment:
+      - JWT_ISSUER=lume-api
+      - JWT_AUDIENCE=lume-clients
+      - PORT=80
+      - POSTGRES_HOST=db
+    networks:
+      - lume
+
+networks:
+  lume:
