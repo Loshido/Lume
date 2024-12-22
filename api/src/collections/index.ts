@@ -1,13 +1,24 @@
 import Elysia from "elysia";
 
-import list from "./list";
-import insert from "./insert";
+import get from "./get";
+import post from "./post";
+import del from "./delete";
 
-const app = new Elysia();
+import get_article from "./article/get"
+import post_article from "./article/post"
+import patch_article from "./article/patch"
 
-app.group('/collections', (app) => app
-    .use(list)
-    .use(insert)
+const app = new Elysia({
+    tags: ['Content']
+});
+
+app.group('', (app) => app
+    .use(get)
+    .use(post)
+    .use(del)
+    .use(get_article)
+    .use(post_article)
+    .use(patch_article)
 )
 
 export default app;

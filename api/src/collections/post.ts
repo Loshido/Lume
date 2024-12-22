@@ -2,28 +2,33 @@ import Elysia, { t } from "elysia";
 import sql from "lib:sql";
 import Case from "case";
 
-export default new Elysia().post('/', async ({ body, set }) => {
-    const client = await sql()
+export default new Elysia().post('/collections', async ({ body, set }) => {
+    const client = await sql();
 
     const id = Case.kebab(body.title);
+    
+    if(id.length < 5) {
+        set.status = 'Bad Request';
+        return id;
+    }
     try {
         const response = await client.query(`INSERT INTO collections
             (id, name, description) VALUES ($1, $2, $3) RETURNING *`,
             [id, body.title, body.description]);
-        client.release()
+        client.release();
     
         if(response.rowCount && response.rowCount > 0) {
             set.status = 'OK';
-            return response.rows[0]
+            return response.rows[0];
         } else {
-            set.status = 'Bad Request'
-            return
+            set.status = 'Bad Request';
+            return "";
         }
     }
     catch(e) {
-        client.release()
-        set.status = 'Conflict'
-        return null
+        client.release();
+        set.status = 'Conflict';
+        return null;
     }
 }, {
     body: t.Object({
@@ -39,6 +44,6 @@ export default new Elysia().post('/', async ({ body, set }) => {
             description: t.Union([t.String(), t.Null()])
         }),
         409: t.Null(),
-        400: t.Null()
+        400: t.String()
     }
 })

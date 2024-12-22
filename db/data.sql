@@ -9,7 +9,7 @@ CREATE TABLE article(
     id TEXT PRIMARY KEY, -- id in kebab-case
     title TEXT, -- article name
     content TEXT,
-    createdAt TIMESTAMP, 
-    updatedAt TIMESTAMP,
+    createdAt TIMESTAMP DEFAULT NOW(), 
+    updatedAt TIMESTAMP DEFAULT NOW(),
     draft BOOLEAN DEFAULT true
 );

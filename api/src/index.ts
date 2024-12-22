@@ -13,12 +13,18 @@ const app = new Elysia()
                 info: {
                     title: 'Lume API Documentation',
                     version: '1.0.0'
-                }
+                },
+                tags: [
+                    {
+                        name: "Content",
+                        description: "Endpoint for content management"
+                    }
+                ]
             },
             scalarConfig: {
                 hideDownloadButton: true,
                 hiddenClients: true,
-            }
+            },
         })
     )
     .use(collections)
