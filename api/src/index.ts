@@ -8,13 +8,15 @@ import collections from "./collections"
 import auth from "./auth";
 import { fromEnv } from "lib:utils/etc";
 import media from "./media";
+import editor from "./editor";
+import cors from "@elysiajs/cors";
 
 const app = new Elysia()
     .use(
         swagger({
             documentation: {
                 info: {
-                    title: 'Lume API Documentation',
+                    title: 'Lume - API',
                     version: '1.0.0'
                 },
                 tags: [
@@ -30,6 +32,10 @@ const app = new Elysia()
                         name: "Media",
                         description: "Endpoint for media management"
                     },
+                    {
+                        name: "Editor",
+                        description: "Endpoint for Editor's configuration"
+                    },
                 ]
             },
             scalarConfig: {
@@ -38,9 +44,11 @@ const app = new Elysia()
             },
         })
     )
+    .use(cors())
     .use(auth)
     .use(collections)
     .use(media)
+    .use(editor)
     .listen(port);
 
 consola.success(`Lume's API listen at ${app.server?.hostname}:${app.server?.port}`);

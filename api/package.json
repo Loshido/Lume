@@ -6,6 +6,7 @@
     "dev": "PORT=80 bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.6",
     "@types/pg": "^8.11.10",
     "argon2": "^0.41.1",
