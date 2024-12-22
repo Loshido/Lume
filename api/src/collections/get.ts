@@ -1,7 +1,7 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import { Article } from "lib:types";
+import sql from "lib:orm/sql";
+import { Article } from "lib:utils/types";
 
 type ArticleHead = Pick<Article, 
     'id' | 'title' | 'createdat' | 'updatedat' | 'draft'>;
@@ -40,15 +40,19 @@ export default new Elysia()
                 })
             ),
             500: t.Null()
+        },
+        detail: {
+            description: 'Get the collections list',
+            summary: '/collections/'
         }
     })
-    .get('/collections/:col', async ({ set, params }) => {
+    .get('/collections/:collection', async ({ set, params }) => {
         const client = await sql();
 
         try {
             const response = await client.query<ArticleHead>(
-                `SELECT * FROM article WHERE collection = $1;`,
-                [ params.col ]);
+                `SELECT * FROM articles WHERE collection = $1;`,
+                [ params.collection ]);
             client.release();
 
             if(response.rowCount && response.rowCount > 0) {
@@ -78,5 +82,9 @@ export default new Elysia()
             ),
             404: t.Null(),
             500: t.Null()
+        },
+        detail: {
+            description: 'Get the articles from a collection',
+            summary: '/collections/:collection/'
         }
     })

@@ -4,7 +4,7 @@ CREATE TABLE collections(
     description TEXT DEFAULT NULL -- An optionnal description 
 );
 
-CREATE TABLE article(
+CREATE TABLE articles(
     collection TEXT references collections(id),
     id TEXT PRIMARY KEY, -- id in kebab-case
     title TEXT, -- article name
@@ -12,4 +12,12 @@ CREATE TABLE article(
     createdAt TIMESTAMP DEFAULT NOW(), 
     updatedAt TIMESTAMP DEFAULT NOW(),
     draft BOOLEAN DEFAULT true
+);
+
+CREATE TABLE users(
+    id TEXT PRIMARY KEY,
+    email VARCHAR(55) NOT NULL UNIQUE,
+    name VARCHAR,
+    permission VARCHAR(3) DEFAULT '000',
+    password TEXT NOT NULL
 );

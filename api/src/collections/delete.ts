@@ -1,16 +1,28 @@
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import { Article, Collection } from "lib:types";
+import { factory } from "lib:auth/jwt";
+import sql from "lib:orm/sql";
+import { Article, Collection } from "lib:utils/types";
 
-export default new Elysia().delete('/collections/:col', async ({ set, params }) => {
+export default new Elysia().delete('/collections/:collection', async ({ set, params, cookie: { jwt, refresh } }) => {
+    const { type, value } = await factory(jwt.value, refresh.value);
+    if(type === 'failed') {
+        set.status = 'Unauthorized';
+        return null
+    } else if (type === 'refresh') {
+        jwt.update({
+            value,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+        })
+    }
+
     const client = await sql();
 
     try {
-        const articles = await client.query<Article>(`DELETE FROM article
-            WHERE collection = $1 RETURNING *`, [ params.col ]);
+        const articles = await client.query<Article>(`DELETE FROM articles
+            WHERE collection = $1 RETURNING *`, [ params.collection ]);
         const response = await client.query<Collection>(`DELETE FROM collections
             WHERE id = $1 RETURNING *`,
-            [ params.col ]);
+            [ params.collection ]);
         client.release();
     
         if(response.rowCount && response.rowCount > 0) {
@@ -50,6 +62,15 @@ export default new Elysia().delete('/collections/:col', async ({ set, params }) 
             })
         }),
         404: t.Null(),
-        500: t.Null()
+        500: t.Null(),
+        401: t.Null()
+    },
+    cookie: t.Cookie({
+        jwt: t.Optional(t.String()),
+        refresh: t.Optional(t.String())
+    }),
+    detail: {
+        description: 'Delete a collection (must be authentificated)',
+        summary: '/collections/:collection/'
     }
 })

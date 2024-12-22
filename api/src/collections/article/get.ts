@@ -1,17 +1,17 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import { Article } from "lib:types";
+import sql from "lib:orm/sql";
+import { Article } from "lib:utils/types";
 
 type Head = Pick<Article, 'title' | 'createdat' | 'updatedat'>;
 
 export default new Elysia()
-    .get('/collections/:col/:article', async ({ params, set }) => {
+    .get('/collections/:collection/:article', async ({ params, set }) => {
         const client = await sql();
 
         try {
-            const response = await client.query<Article>(`SELECT * FROM article
-                WHERE collection = $1 AND id = $2`, [ params.col, params.article ]);
+            const response = await client.query<Article>(`SELECT * FROM articles
+                WHERE collection = $1 AND id = $2`, [ params.collection, params.article ]);
             client.release()
             
             if(response.rowCount && response.rowCount > 0) {
@@ -40,17 +40,21 @@ export default new Elysia()
             }),
             404: t.Null(),
             500: t.Null()
+        },
+        detail: {
+            description: 'Get an article for a specified collection',
+            summary: '/collections/:col…/:article'
         }
     })
-    .get('/collections/:col/:article/head', async ({ params, set }) => {
+    .get('/collections/:collection/:article/head', async ({ params, set }) => {
         const client = await sql();
 
         try {
             const response = await client.query<Head>(`
                 SELECT title, createdat, updatedat 
-                FROM article
+                FROM articles
                 WHERE collection = $1 AND id = $2`, 
-                [ params.col, params.article ]);
+                [ params.collection, params.article ]);
             client.release()
             
             if(response.rowCount && response.rowCount > 0) {
@@ -78,5 +82,9 @@ export default new Elysia()
             ),
             404: t.Null(),
             500: t.Null()
+        },
+        detail: {
+            description: 'Get the head of an article for a specified collection',
+            summary: '/collections/:col…/:art…/head'
         }
     })

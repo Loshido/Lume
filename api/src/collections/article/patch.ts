@@ -1,10 +1,22 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import { Article } from "lib:types";
+import { factory } from "lib:auth/jwt";
+import sql from "lib:orm/sql";
+import { Article } from "lib:utils/types";
 
 export default new Elysia()
-    .patch('/collections/:col/:article', async ({ set, params, body }) => {
+    .patch('/collections/:collection/:article', async ({ set, params, body, cookie: { jwt, refresh } }) => {
+        const { type, value } = await factory(jwt.value, refresh.value);
+        if(type === 'failed') {
+            set.status = 'Unauthorized';
+            return null
+        } else if (type === 'refresh') {
+            jwt.update({
+                value,
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+            })
+        }
+
         const client = await sql();
 
         const keys = Object.keys(body)
@@ -12,15 +24,15 @@ export default new Elysia()
             .join(', ');
 
         const values = Object.values(body)
-        const query = `UPDATE article 
-        SET ${keys} 
-        WHERE id = $${ values.length + 1 } AND collection = $${values.length + 2}
-        RETURNING *`
-        consola.trace(`[/collections/:col/:article PATCH] query: ${query}`)
+        const query = `UPDATE articles 
+            SET ${keys} 
+            WHERE id = $${ values.length + 1 } AND collection = $${values.length + 2}
+            RETURNING *`
+        consola.trace(`[/collections/:collection/:article PATCH] query: ${query}`)
         
         try {
             const response = await client.query<Article>(query, 
-                [ ...values, params.article, params.col ]);
+                [ ...values, params.article, params.collection ]);
             client.release()
 
             if(response.rowCount && response.rowCount > 0) {
@@ -47,6 +59,15 @@ export default new Elysia()
         response: {
             200: t.String(),
             500: t.Null(),
-            404: t.Null()
+            404: t.Null(),
+            401: t.Null()
+        },
+        cookie: t.Cookie({
+            jwt: t.Optional(t.String()),
+            refresh: t.Optional(t.String())
+        }),
+        detail: {
+            description: 'Modify an article (must be authentificated)',
+            summary: '/collections/:col…/:article'
         }
     })

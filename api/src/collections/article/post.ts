@@ -1,19 +1,31 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import { Article } from "lib:types";
+import { factory } from "lib:auth/jwt";
+import sql from "lib:orm/sql";
+import { Article } from "lib:utils/types";
 
 export default new Elysia()
-    .post('/collections/:col/:article', async ({ params, body, set }) => {
+    .post('/collections/:collection/:article', async ({ params, body, set, cookie: { jwt, refresh } }) => {
+        const { type, value } = await factory(jwt.value, refresh.value);
+        if(type === 'failed') {
+            set.status = 'Unauthorized';
+            return null
+        } else if (type === 'refresh') {
+            jwt.update({
+                value,
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+            })
+        }
+
         const client = await sql();
         
         try {
-            const response = await client.query<Article>(`INSERT INTO article
+            const response = await client.query<Article>(`INSERT INTO articles
                 (collection, id, title, content, draft) 
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING *`, 
                 [
-                    params.col,
+                    params.collection,
                     params.article,
                     body.title,
                     body.content,
@@ -25,7 +37,7 @@ export default new Elysia()
                 set.status = 'OK';
                 return response.rows[0].id;
             } else {
-                set.status = 'Internal Server Error';
+                set.status = 'Not Found';
                 return null;
             }
         } catch (e) {
@@ -44,6 +56,15 @@ export default new Elysia()
         response: {
             200: t.String(), // Article's id
             409: t.Null(),
-            500: t.Null()
+            404: t.Null(),
+            401: t.Null()
+        },
+        cookie: t.Cookie({
+            jwt: t.Optional(t.String()),
+            refresh: t.Optional(t.String())
+        }),
+        detail: {
+            description: 'Create a new article for a specified collection (must be authentificated)',
+            summary: '/collections/:col…/:article'
         }
     })

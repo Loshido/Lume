@@ -2,9 +2,11 @@ import Elysia from "elysia";
 import { swagger } from '@elysiajs/swagger'
 
 import consola from "consola";
-const port = process.env.PORT || 80
+const port = fromEnv('PORT', '80')
 
 import collections from "./collections"
+import auth from "./auth";
+import { fromEnv } from "lib:utils/etc";
 
 const app = new Elysia()
     .use(
@@ -18,6 +20,10 @@ const app = new Elysia()
                     {
                         name: "Content",
                         description: "Endpoint for content management"
+                    },
+                    {
+                        name: "Authentification",
+                        description: "Endpoint for manager authentification"
                     }
                 ]
             },
@@ -28,6 +34,7 @@ const app = new Elysia()
         })
     )
     .use(collections)
+    .use(auth)
     .listen(port);
 
 consola.success(`Lume's API listen at ${app.server?.hostname}:${app.server?.port}`);

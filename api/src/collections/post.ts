@@ -1,11 +1,25 @@
 import Elysia, { t } from "elysia";
-import sql from "lib:sql";
-import Case from "case";
+import sql from "lib:orm/sql";
+import { kebabCase } from "scule";
+import { factory } from "lib:auth/jwt";
 
-export default new Elysia().post('/collections', async ({ body, set }) => {
+// Creates a new collection of articles
+export default new Elysia().post('/collections', async ({ body, set, cookie: { jwt, refresh } }) => {
+    const { type, value } = await factory(jwt.value, refresh.value);
+    if(type === 'failed') {
+        set.status = 'Unauthorized';
+        return null
+    } else if (type === 'refresh') {
+        jwt.update({
+            value,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+        })
+    }
+
     const client = await sql();
 
-    const id = Case.kebab(body.title);
+    // ID are in kebab-case
+    const id = kebabCase(body.title);
     
     if(id.length < 5) {
         set.status = 'Bad Request';
@@ -38,12 +52,21 @@ export default new Elysia().post('/collections', async ({ body, set }) => {
         )
     }),
     response: {
+        401: t.Null(),
         200: t.Object({
             id: t.String(),
             name: t.String(),
             description: t.Union([t.String(), t.Null()])
         }),
         409: t.Null(),
-        400: t.String()
+        400: t.String(),
+    },
+    cookie: t.Cookie({
+        jwt: t.Optional(t.String()),
+        refresh: t.Optional(t.String())
+    }),
+    detail: {
+        description: 'Create a new collection (must be authentificated)',
+        summary: '/collections'
     }
 })

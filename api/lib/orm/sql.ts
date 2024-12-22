@@ -1,3 +1,4 @@
+import { fromEnv } from "lib:utils/etc";
 import { Pool } from "pg";
 
 const DEFAULT_CONFIGURATION = {
@@ -8,7 +9,7 @@ const DEFAULT_CONFIGURATION = {
 }
 
 export default async () => {
-    const secret = process.env.POSTGRES_API_PASSWORD || '';
+    const secret = fromEnv('POSTGRES_API_PASSWORD');
 
     return await new Pool({
         ...DEFAULT_CONFIGURATION,
