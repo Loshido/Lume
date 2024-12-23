@@ -60,11 +60,17 @@ export default new Elysia()
             email
         }, '16 weeks');
 
-        jwt.value = token;
-        jwt.expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+        jwt.set({
+            value: token,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+            domain: 'localhost',
+        });
 
-        refresh.value = refresh_token;
-        refresh.expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 * 16)
+        refresh.set({
+            value: refresh_token,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 * 16),
+            domain: 'localhost'
+        })
 
         log.trace(`${email} logged in`)
         set.status = 'OK';
