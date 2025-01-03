@@ -18,15 +18,14 @@ export default component$(() => {
                 </div>
             </div>
             <div class="w-full h-full px-12 py-24 md:py-48 md:px-24">
-                <h1 class="text-5xl font-bold w-fit my-3">
-                        {/* bg-gradient-to-tr md:bg-gradient-to-br to-red-200 from-red-600 */}
-                    Lume<span class="text-xl font-normal">'s Editor</span>
+                <h1 class="text-2xl font-bold w-fit my-2">
+                    Lume<span class="text-base font-normal">'s Editor</span>
                 </h1>
-                <p>
+                <p class="text-sm">
                     Create, edit, manage, and publish content
                 </p>
 
-                <form class="py-6 flex flex-col gap-3" preventdefault:submit={true}
+                <form class="py-4 flex flex-col gap-3" preventdefault:submit={true}
                     onSubmit$={async () => {
                         if(data.email.includes('@') && data.password.length > 6) {
                             const response = await fetch('http://localhost/auth/login', {
@@ -49,17 +48,17 @@ export default component$(() => {
                     <input type="email" 
                         onInput$={(_, t) => data.email = t.value} 
                         placeholder="Enter your email"
-                        class="p-3 text-xl outline-none border rounded font-medium" 
+                        class="px-2 py-1.5 text-lg outline-none border rounded" 
                         required />
                     <input type="password" 
                         onInput$={(_, t) => data.password = t.value} 
                         placeholder="Enter your password" 
                         required
-                        class="p-3 text-xl outline-none border rounded font-medium" />
+                        class="px-2 py-1.5 text-lg outline-none border rounded" />
 
                     <div class="flex gap-3">
                         <input type="submit" value="Access"
-                            class="px-3 py-1.5 rounded text-xl font-semibold bg-[#e5e7eb] cursor-pointer
+                            class="px-2 py-1 rounded text-lg font-semibold bg-[#e5e7eb] cursor-pointer
                                 hover:bg-red-600 hover:bg-opacity-25 transition-colors" />
 
                     </div>

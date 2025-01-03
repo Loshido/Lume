@@ -5,3 +5,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .grid-row{
+        grid-template-columns: auto 1fr;
+    }
+    .grid-col{
+        grid-template-columns: unset;
+        grid-template-rows: auto 1fr;
+    }
+}
