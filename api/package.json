@@ -14,8 +14,8 @@
     "elysia": "latest",
     "jose": "^5.9.6",
     "pg": "^8.13.1",
-    "redis": "^4.7.0",
-    "scule": "^1.3.0"
+    "scule": "^1.3.0",
+    "unstorage": "^1.14.4"
   },
   "devDependencies": {
     "bun-types": "latest"

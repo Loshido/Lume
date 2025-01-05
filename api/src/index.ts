@@ -10,6 +10,7 @@ import { fromEnv } from "lib:utils/etc";
 import media from "./media";
 import editor from "./editor";
 import cors from "@elysiajs/cors";
+import storage from "lib:orm/cache";
 
 const app = new Elysia()
     .use(

@@ -27,7 +27,7 @@ export default new Elysia()
 
         try {
             // We get user informations
-            const response = await client.query<{ password: string, id: string, name: string }>(`
+            const response = await client.query<{ id: string }>(`
                 SELECT id
                 FROM users
                 WHERE id = $1 AND permission LIKE 'A__'`,
@@ -62,6 +62,7 @@ export default new Elysia()
                 set.status = 'OK';
                 return id;
             } else {
+                // Should never happen
                 set.status = 'I\'m a teapot';
                 return null;
             }

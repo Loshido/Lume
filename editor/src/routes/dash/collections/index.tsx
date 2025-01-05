@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { Link, type DocumentHead } from "@builder.io/qwik-city";
-import { LuFolderPlus, LuRefreshCcw } from "@qwikest/icons/lucide";
+import { LuFolderPlus, LuRefreshCcw, LuSquareSlash } from "@qwikest/icons/lucide";
 
 const info = {
     id: "someid",
@@ -12,7 +12,24 @@ const info = {
 
 import Collection from "~/components/collections/card";
 export default component$(() => {
-    const a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const refreshing = useSignal(false);
+    const collections = useStore<{
+        id: string,
+        name: string,
+        description: string | null
+    }[]>([])
+
+    // eslint-disable-next-line qwik/no-use-visible-task
+    useVisibleTask$(async () => {
+        refreshing.value = true
+        const response = await fetch('http://localhost/collections');
+        if(response.status == 200) {
+            const data = await response.json()
+            collections.push(...data);
+        }
+        refreshing.value = false
+    })
+
     return <>
         <header class="flex flex-row py-4 justify-between w-full">
             <div>
@@ -32,21 +49,39 @@ export default component$(() => {
                 </Link>
                 <div class="p-2 bg-black bg-opacity-5 rounded select-none
                     hover:bg-opacity-15 transition-colors cursor-pointer"
-                    title="Refresh">
-                    <LuRefreshCcw />
+                    title="Refresh" onClick$={async () => {
+                        if(refreshing.value) return
+                        refreshing.value = true
+                        const response = await fetch('http://localhost/collections');
+                        if(response.status == 200) {
+                            const data = await response.json()
+                            collections.splice(0, collections.length)
+                            collections.push(...data);
+                        }
+                        refreshing.value = false
+                    }}>
+                    <LuRefreshCcw class={refreshing.value ? 'animate-spin' : ''} />
                 </div>
             </div>
         </header>
-        <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-            {
-                a.map((_, i) => <Collection key={i} collection={{
-                    ...info,
-                    articles: Math.floor(Math.random() * 100),
-                    id: Math.floor(Math.random() * 99999999).toString(36),
-                    name: Math.floor(Math.random() * 99999999).toString(36)
-                }}/>)
-            }
-        </section>
+        {
+            collections.length == 0
+            ? <section class="flex w-full h-full items-center justify-center 
+                gap-2 text-black text-opacity-25 select-none">
+                <LuSquareSlash/> Empty  
+            </section>
+            : <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+                {
+                    collections.map(col => <Collection key={col.id} collection={{
+                        id: col.id,
+                        name: col.name,
+                        description: col.description || '',
+                        articles: 0,
+                        date: new Date()
+                    }} />)
+                }
+            </section>
+        }
     </>
 })
 

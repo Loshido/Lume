@@ -2,9 +2,10 @@ import Elysia, { t } from "elysia";
 
 import { sign } from "lib:auth/jwt"
 import sql from "lib:orm/sql";
-import { verify } from "lib:auth/hash";
-import consola from "consola";
+import { hash, verify } from "lib:auth/hash";
 import log from "lib:utils/log";
+import consola from "consola";
+
 export default new Elysia()
     .post('/auth/login', async ({ set, body: { email, password }, cookie: { jwt, refresh } }) => {
         let id = '';
@@ -13,25 +14,37 @@ export default new Elysia()
         const client = await sql();
 
         try {
-            // We get user informations
+            // We get user data
             const response = await client.query<{ password: string, id: string, name: string }>(`
                 SELECT password, id, name
                 FROM users
                 WHERE email = $1`,
                 [ email ]);
-            // Release the connection
-            client.release();
+            
 
             // Not found -> bad request
             if(!response.rowCount || response.rowCount == 0) {
+                // Release the connection
+                client.release();
+                log.trace(`attempt to login as ${email} but this user doesn't exist`)
                 set.status = 'Bad Request';
                 return null;
             }
 
             const user = response.rows[0];
+            // If the password isn't hashed we hash it.
+            if(!user.password.startsWith('$argon2')) {
+                user.password = await hash(user.password);
+                await client.query("UPDATE users SET password = $1 WHERE id = $2", 
+                    [user.password, user.id]);
+            }
+            // Release the connection
+            client.release();
+            
             const valid = await verify(user.password, password);
             // Password doesn't correspond -> Bad request
             if(!valid) {
+                log.trace(`attempt to login as ${email} failed`)
                 set.status = 'Bad Request';
                 return null;
             }
@@ -45,7 +58,7 @@ export default new Elysia()
             return null
         }
 
-        // At this point, the user's password is correct
+        // At this point, user's password is correct
         // we consider the user as logged.
 
         const token = await sign({
@@ -64,12 +77,19 @@ export default new Elysia()
             value: token,
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
             domain: 'localhost',
+            httpOnly: true,
+            sameSite: false,
+            secure: true
         });
 
         refresh.set({
             value: refresh_token,
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 * 16),
-            domain: 'localhost'
+            domain: 'localhost',
+            httpOnly: true,
+            sameSite: false,
+            secure: true
+
         })
 
         log.trace(`${email} logged in`)

@@ -39,6 +39,7 @@ export default component$(() => {
                             })
 
                             if(response.status === 200) {
+                                localStorage.setItem('jwt', await response.text())
                                 nav('/dash')
                             } else {
                                 error.value = response.status + ' - ' + response.statusText;

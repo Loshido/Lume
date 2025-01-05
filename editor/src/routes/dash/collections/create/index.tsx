@@ -76,7 +76,20 @@ export default component$(() => {
             <div class="flex flex-row items-center gap-3 text-xs font-medium">
                 <div class="px-2.5 py-1 w-fit cursor-pointer bg-opacity-15 bg-green-700 hover:bg-opacity-25"
                     onClick$={async () => {
-
+                        const response = await fetch('http://localhost/collections', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                title: collection.name,
+                                description: collection.description
+                            })
+                        })
+                        console.info(response)
+                        const body = await response.json()
+                        console.log(body)
                     }}>
                     Insert
                 </div>
