@@ -9,11 +9,13 @@ const DEFAULT_CONFIGURATION = {
     max: 50
 }
 
-export default async () => {
-    const secret = fromEnv('POSTGRES_API_PASSWORD');
+const clients = new Pool({
+    ...DEFAULT_CONFIGURATION,
+    password: fromEnv('POSTGRES_API_PASSWORD'),
+});
 
-    return await new Pool({
-        ...DEFAULT_CONFIGURATION,
-        password: secret,
-    }).connect()
-}
+process.on('exit', async () => {
+    await clients.end()
+})
+
+export default async () => await clients.connect();

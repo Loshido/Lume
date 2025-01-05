@@ -41,7 +41,7 @@ export default component$(() => {
                             if(response.status === 200) {
                                 nav('/dash')
                             } else {
-                                error.value = response.statusText;
+                                error.value = response.status + ' - ' + response.statusText;
                             }
                         }
                     }}>

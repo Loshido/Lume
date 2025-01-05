@@ -1,6 +1,6 @@
-import { component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
-import { DocumentHead } from "@builder.io/qwik-city";
-import { LuArrowDownNarrowWide, LuRefreshCcw } from "@qwikest/icons/lucide";
+import { component$, useStore, useTask$ } from "@builder.io/qwik";
+import { DocumentHead, Link } from "@builder.io/qwik-city";
+import { LuArrowDownNarrowWide, LuPlus, LuRefreshCcw } from "@qwikest/icons/lucide";
 
 import MediaCard from "~/components/media/card";
 
@@ -30,8 +30,8 @@ export default component$(() => {
         copy.push(...media);
     })
 
-    return <div class="h-full w-full -m-5">
-        <header class="flex flex-row py-9 px-5 justify-between w-full">
+    return <div class="h-full w-[calc(100% + 40px)] -m-5">
+        <header class="flex flex-row pt-9 px-5 justify-between w-full">
             <div>
                 <h1 class="font-semibold text-xl">
                     Media storage
@@ -42,6 +42,11 @@ export default component$(() => {
             </div>
 
             <div class="flex flex-row items-center gap-2 text-sm">
+                <Link class="p-2 bg-black bg-opacity-5 rounded select-none
+                    hover:bg-opacity-15 transition-colors cursor-pointer"
+                    title="Insert" href="/dash/media/create">
+                    <LuPlus/>
+                </Link>
                 <div class="p-2 bg-black bg-opacity-5 rounded select-none
                     hover:bg-opacity-15 transition-colors cursor-pointer"
                     title="Refresh">

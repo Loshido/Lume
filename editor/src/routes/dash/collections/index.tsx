@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import { LuFolderPlus, LuRefreshCcw } from "@qwikest/icons/lucide";
 
 const info = {
@@ -25,21 +25,21 @@ export default component$(() => {
             </div>
 
             <div class="flex flex-row items-center gap-2 text-sm">
-                <div class="p-2 bg-black bg-opacity-5 rounded select-none
+                <Link class="p-2 bg-black bg-opacity-5 rounded select-none
                     hover:bg-opacity-15 transition-colors cursor-pointer"
-                    title="Create a collection">
+                    title="Create a collection" href="/dash/collections/create">
                     <LuFolderPlus/>
-                </div>
+                </Link>
                 <div class="p-2 bg-black bg-opacity-5 rounded select-none
                     hover:bg-opacity-15 transition-colors cursor-pointer"
                     title="Refresh">
-                    <LuRefreshCcw/>
+                    <LuRefreshCcw />
                 </div>
             </div>
         </header>
         <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             {
-                a.map(_ => <Collection collection={{
+                a.map((_, i) => <Collection key={i} collection={{
                     ...info,
                     articles: Math.floor(Math.random() * 100),
                     id: Math.floor(Math.random() * 99999999).toString(36),
