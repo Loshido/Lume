@@ -1,5 +1,5 @@
-import { component$, Slot } from "@builder.io/qwik";
-import { Link, RequestHandler, useDocumentHead, useLocation } from "@builder.io/qwik-city";
+import { component$, Slot, useSignal } from "@builder.io/qwik";
+import { Link, type LinkProps, RequestHandler, useDocumentHead, useLocation } from "@builder.io/qwik-city";
 
 export const onRequest: RequestHandler = async (req) => {
     if(!req.cookie.get('jwt')) {
@@ -9,19 +9,19 @@ export const onRequest: RequestHandler = async (req) => {
     }
 }
 
-export const Item = component$((props: { href: string }) => {
+export const Item = component$((props: LinkProps) => {
     const loc = useLocation()
-    return <Link class={["flex gap-2 items-center p-2 transition-colors",
+    return <Link {...props} class={["flex gap-2 items-center p-2 transition-colors",
         "hover:bg-opacity-10 rounded cursor-pointer bg-black text-xs",
-        loc.url.pathname == props.href ? 'bg-opacity-15' : 'bg-opacity-0']}
-        href={props.href}>
+        loc.url.pathname == props.href ? 'bg-opacity-15' : 'bg-opacity-0']}>
         <Slot/>
     </Link>
 })
 
-import { LuAlignLeft, LuImage, LuLogOut, LuSettings, LuSquareSlash, LuUsers } from "@qwikest/icons/lucide"
+import { LuAlignLeft, LuHardDrive, LuImage, LuLogOut, LuSettings, LuSquareSlash, LuUsers } from "@qwikest/icons/lucide"
 export default component$(() => {
     const head = useDocumentHead()
+    const chat = useSignal('')
 
     if(!head.frontmatter.dash) {
         return <Slot/>
@@ -48,11 +48,15 @@ export default component$(() => {
                 </Item>
             </nav>
             <div class="p-4 flex sm:flex-col gap-1 pl-0 sm:pl-4">
+                <Item href="http://localhost/swagger" target="_blank">
+                    <LuHardDrive/>
+                    API
+                </Item>
                 <Item href="/dash/settings/">
                     <LuSettings/>
                     Settings
                 </Item>
-                <Item href="/dash/logout/">
+                <Item href="/dash/logout/" prefetch={false}>
                     <LuLogOut/>
                     Logout
                 </Item>
@@ -60,6 +64,11 @@ export default component$(() => {
         </div>
         <div class="h-full w-full p-5 overflow-y-scroll">
             <Slot/>
+        </div>
+        <div class="absolute top-4 right-4">
+            {
+                chat.value
+            }
         </div>
     </section>
 })

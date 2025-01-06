@@ -48,11 +48,11 @@ export default component$(() => {
             </div>
         </div>
         <hr class="my-5"/>
-        <div class="flex flex-row items-center gap-3 px-4">
+        <div class="flex flex-row items-center gap-3 px-4 text-xs font-medium">
             {
                 edit.active
                 ? <>
-                    <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                         bg-green-100 hover:bg-green-300 transition-colors"
                         onClick$={async () => {
                             const id = document.getElementById('id')!;
@@ -94,7 +94,7 @@ export default component$(() => {
                         }}>
                         Save
                     </div>
-                    <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                         bg-red-100 hover:bg-red-300 transition-colors"
                         onClick$={() => {
                             const id = document.getElementById('id')!;
@@ -110,12 +110,12 @@ export default component$(() => {
                     </div>
                 </>
                 : <>
-                    <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                         bg-blue-100 hover:bg-blue-300 transition-colors"
                         onClick$={() => edit.active = true}>
                         Edit
                     </div>
-                    <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                         bg-red-100 hover:bg-red-300 transition-colors"
                         onClick$={() => edit.delete_confirmation = true}>
                         Delete
@@ -131,8 +131,8 @@ export default component$(() => {
                     <p class="w-2/3 text-center">
                         Are you sure you want to permanently remove this collection ?
                     </p>
-                    <div class="flex flex-row items-center gap-3">
-                        <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                    <div class="flex flex-row items-center gap-3 text-xs font-medium">
+                        <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                             bg-red-100 hover:bg-red-300 transition-colors"
                             onClick$={async () => {
                                 const url = `http://localhost/collections/${collection.value!.id}`
@@ -149,7 +149,7 @@ export default component$(() => {
                             }}>
                             Yes
                         </div>
-                        <div class="text-sm px-2 py-0.5 rounded cursor-pointer select-none
+                        <div class="px-2.5 py-1 w-fit cursor-pointer select-none
                             bg-blue-100 hover:bg-blue-300 transition-colors"
                             onClick$={() => edit.delete_confirmation = false}>
                             No, Cancel

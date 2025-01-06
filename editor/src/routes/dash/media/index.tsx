@@ -48,7 +48,7 @@ export default component$(() => {
                     Media storage
                 </h1>
                 <p class="font-light text-sm">
-                    Insert, remove, modify media
+                    🌉 Insert, remove, modify media
                 </p>
             </div>
 
