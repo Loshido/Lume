@@ -1,17 +1,10 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { Link, type DocumentHead } from "@builder.io/qwik-city";
+import { Link, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { LuFolderPlus, LuRefreshCcw, LuSquareSlash } from "@qwikest/icons/lucide";
-
-const info = {
-    id: "someid",
-    name: "Somename",
-    description: "Some long description",
-    date: new Date(),
-    articles: 11
-}
 
 import Collection from "~/components/collections/card";
 export default component$(() => {
+    const nav = useNavigate();
     const refreshing = useSignal(false);
     const collections = useStore<{
         id: string,
@@ -22,12 +15,19 @@ export default component$(() => {
     // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(async () => {
         refreshing.value = true
-        const response = await fetch('http://localhost/collections');
-        if(response.status == 200) {
-            const data = await response.json()
-            collections.push(...data);
+        try {
+            const response = await fetch('http://localhost/collections');
+            if(response.status == 200) {
+                const data = await response.json()
+                collections.push(...data);
+            } else if(response.status == 401) {
+                nav('/')
+            }
+            refreshing.value = false
+        } catch(e) {
+            nav('/')
+            console.error(e)
         }
-        refreshing.value = false
     })
 
     return <>

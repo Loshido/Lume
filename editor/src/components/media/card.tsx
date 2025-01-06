@@ -6,7 +6,7 @@ interface Media {
     id: string,
     origin: string,
     description: string,
-    date: Date
+    createdat: Date
 }
 
 type Props = {
@@ -31,7 +31,7 @@ export default component$(({ media, ...props }: Props) => {
                 title="Creation date">
                 <LuCalendarPlus/>
                 { 
-                    media.date.toLocaleDateString(undefined, {
+                    media.createdat.toLocaleDateString(undefined, {
                         dateStyle: 'short'
                     }) 
                 }

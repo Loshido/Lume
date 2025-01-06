@@ -30,6 +30,7 @@ export default component$(() => {
                         if(data.email.includes('@') && data.password.length > 6) {
                             const response = await fetch('http://localhost/auth/login', {
                                 method: 'POST',
+                                credentials: 'include',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },

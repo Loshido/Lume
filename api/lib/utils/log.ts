@@ -12,9 +12,9 @@ const log_level = [
 
 function write(path: string, data: string) {
     if(fs.existsSync(path)) {
-        fs.appendFileSync(path, data + '\n');
+        fs.appendFileSync(path, '\n' + data);
     } else {
-        fs.writeFileSync(path, data + '\n');
+        fs.writeFileSync(path, data);
     }
 }
 

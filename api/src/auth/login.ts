@@ -77,9 +77,8 @@ export default new Elysia()
             value: token,
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
             domain: 'localhost',
-            httpOnly: true,
+            httpOnly: false,
             sameSite: false,
-            secure: true
         });
 
         refresh.set({
@@ -88,7 +87,6 @@ export default new Elysia()
             domain: 'localhost',
             httpOnly: true,
             sameSite: false,
-            secure: true
 
         })
 

@@ -23,6 +23,7 @@ export default new Elysia()
             set.status = 'Precondition Failed'
             return null
         }
+        console.log(value)
 
         const client = await sql()
         

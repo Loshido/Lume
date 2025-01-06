@@ -1,33 +1,44 @@
-import { component$, useStore, useTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import { DocumentHead, Link } from "@builder.io/qwik-city";
 import { LuArrowDownNarrowWide, LuPlus, LuRefreshCcw } from "@qwikest/icons/lucide";
 
 import MediaCard from "~/components/media/card";
 
 export default component$(() => {
+    const refreshing = useSignal(false)
     const media = useStore<{
         id: string,
         description: string,
         origin: string,
-        date: Date
+        createdat: Date
     }[]>([]);
     const copy = useStore<{
         id: string,
         description: string,
         origin: string,
-        date: Date
+        createdat: Date
     }[]>([])
 
-    useTask$(() => {
-        for(let i = 0; i < 50; i++) {
-            media.push({
-                id: Math.floor(Math.random() * 99999).toString(36),
-                description: "Some long description",
-                origin: `someone${i}@pm.me`,
-                date: new Date(Date.now() - 1000 * 60 * 60 * 24 * Math.floor(Math.random() * 365 / 50) * i)
-            })
-        }
-        copy.push(...media);
+    useVisibleTask$(async () => {
+        refreshing.value = true
+        const response = await fetch('http://localhost/media');
+        if(response.status == 200) {
+            const data = await response.json() as {
+                id: string,
+                description: string,
+                origin: string,
+                createdat: string
+            }[]
+            media.push(...data.map(d => ({
+                ...d,
+                createdat: new Date(d.createdat)
+            })));
+            console.log(media)
+            copy.push(...media)
+        } else {
+            console.error(response)
+        };
+        refreshing.value = false
     })
 
     return <div class="h-full w-[calc(100% + 40px)] -m-5">
@@ -49,8 +60,28 @@ export default component$(() => {
                 </Link>
                 <div class="p-2 bg-black bg-opacity-5 rounded select-none
                     hover:bg-opacity-15 transition-colors cursor-pointer"
-                    title="Refresh">
-                    <LuRefreshCcw/>
+                    title="Refresh" onClick$={async () => {
+                        if(refreshing.value) return
+                        refreshing.value = true
+                        const response = await fetch('http://localhost/media');
+                        if(response.status == 200) {
+                            const data = await response.json() as {
+                                id: string,
+                                description: string,
+                                origin: string,
+                                createdat: string
+                            }[]
+                            media.splice(0, media.length)
+                            media.push(...data.map(d => ({
+                                ...d,
+                                createdat: new Date(d.createdat)
+                            })));
+                            copy.splice(0, copy.length);
+                            copy.push(...media);
+                        }
+                        refreshing.value = false
+                    }}>
+                    <LuRefreshCcw class={refreshing.value ? 'animate-spin' : ''} />
                 </div>
             </div>
         </header>

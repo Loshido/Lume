@@ -4,18 +4,22 @@ import { fromEnv } from "lib:utils/etc";
 const ISSUER = fromEnv('JWT_ISSUER');
 const AUDIENCE = fromEnv('JWT_AUDIENCE');
 
-export interface Payload {
+export interface User {
     id: string,
     email: string,
     name: string
 }
 
-export const sign = async (payload: Payload, exp?: string) => {
+interface Payload {
+    user: User
+}
+
+export const sign = async (payload: User, exp?: string) => {
     const secret = fromEnv('JWT_SECRET');
     const encoded_secret = new TextEncoder().encode(secret)
     const alg = 'HS256'
 
-    const jwt = await new SignJWT({ payload })
+    const jwt = await new SignJWT({ user: payload })
         .setProtectedHeader({ alg })
         .setIssuedAt()
         .setIssuer(ISSUER)
@@ -36,7 +40,7 @@ export const verify = async (jwt: string) => {
             audience: AUDIENCE,
         })
         
-        return payload
+        return payload.user
     } catch (e) {
         return null
     }
@@ -49,7 +53,7 @@ type AuthFailed = {
 
 type AuthPassed = {
     type: 'passed',
-    value: Payload & JWTPayload
+    value: User
 }
 
 type AuthRefresh = {
