@@ -1,5 +1,37 @@
 import { component$, useSignal, useStore } from "@builder.io/qwik";
-import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
+import { RequestHandler, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
+
+export const onRequest: RequestHandler = async (req) => {
+    const jwt = req.cookie.get('jwt');
+    const refresh = req.cookie.get('refresh')
+    if(jwt) {
+        const response = await fetch('http://localhost/auth/valide', {
+            method: 'POST',
+            body: jwt.value
+        })
+        console.log(response)
+
+        if(response.status == 200) {
+            throw req.redirect(302, '/dash')
+        }
+    }
+    if(refresh) {
+        const response = await fetch('http://localhost/auth/refresh', {
+            method: 'POST',
+            body: refresh.value
+        })
+        if(response.status == 200) {
+            req.cookie.set('jwt', await response.text(), {
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+                domain: 'localhost',
+                httpOnly: false,
+                sameSite: false,
+            })
+
+            throw req.redirect(302, '/dash')
+        }
+    }
+}
 
 import "./style.css"
 export default component$(() => {

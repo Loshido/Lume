@@ -1,5 +1,13 @@
 import { component$, Slot } from "@builder.io/qwik";
-import { Link, useDocumentHead, useLocation } from "@builder.io/qwik-city";
+import { Link, RequestHandler, useDocumentHead, useLocation } from "@builder.io/qwik-city";
+
+export const onRequest: RequestHandler = async (req) => {
+    if(!req.cookie.get('jwt')) {
+        // We can't afford to check if the jwt is valid on each request.
+        // but if it does not exist we kick the user.
+        throw req.redirect(302, '/')
+    }
+}
 
 export const Item = component$((props: { href: string }) => {
     const loc = useLocation()

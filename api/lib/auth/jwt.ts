@@ -1,4 +1,4 @@
-import { JWTPayload, SignJWT, jwtVerify } from "jose"
+import { SignJWT, jwtVerify } from "jose"
 import { fromEnv } from "lib:utils/etc";
 
 const ISSUER = fromEnv('JWT_ISSUER');
@@ -7,7 +7,8 @@ const AUDIENCE = fromEnv('JWT_AUDIENCE');
 export interface User {
     id: string,
     email: string,
-    name: string
+    name: string,
+    refresh?: boolean
 }
 
 interface Payload {
@@ -67,7 +68,7 @@ import log from "lib:utils/log";
 export const factory = async (jwt?: string, refresh?: string): Promise<FactoryResult> => {
     if(jwt && jwt.length > 0) {
         const token = await verify(jwt);
-        if(token) {
+        if(token && !token.refresh) {
             return {
                 type: 'passed',
                 value: token
@@ -76,7 +77,7 @@ export const factory = async (jwt?: string, refresh?: string): Promise<FactoryRe
     }
     if(refresh) {
         const refresh_token = await verify(refresh);
-        if(refresh_token) {
+        if(refresh_token && refresh_token.refresh) {
             const new_jwt = await sign({
                 id: refresh_token.id,
                 email: refresh_token.email,

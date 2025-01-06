@@ -70,7 +70,8 @@ export default new Elysia()
         const refresh_token = await sign({
             id,
             name,
-            email
+            email,
+            refresh: true
         }, '16 weeks');
 
         jwt.set({
