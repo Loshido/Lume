@@ -14,16 +14,21 @@ interface Collection {
 }
 
 export default new Elysia()
-    .get('/collections', async ({ set }) => {
+    .get('/collections', async ({ set, query: { id } }) => {
         // Use a cache layer
         const data = await uncache<Collection[]>('/collections', async (cache) => {
             const client = await sql();
     
             try {
-                const response = await client.query<Collection>(`SELECT * FROM collections;`);
+                const response = id 
+                ? await client.query<Collection>(`SELECT * FROM collections WHERE id = $1`, [id])
+                : await client.query<Collection>(`SELECT * FROM collections;`);
                 client.release();
 
-                await cache(response.rows)
+                if(!id) {
+                    // We don't cache there a scoped collection.
+                    await cache(response.rows)
+                }
 
                 return response.rows;
             } catch (e) {
@@ -53,6 +58,9 @@ export default new Elysia()
             ),
             500: t.Null()
         },
+        query: t.Object({
+            id: t.Optional(t.String())
+        }),
         detail: {
             description: 'Get the collections list',
             summary: '/collections/'

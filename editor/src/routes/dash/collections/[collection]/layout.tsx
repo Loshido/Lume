@@ -1,5 +1,5 @@
-import { component$, Slot } from "@builder.io/qwik";
-import { Link, useLocation } from "@builder.io/qwik-city";
+import { component$, createContextId, type Signal, Slot, useContextProvider, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { Link, useLocation, useNavigate } from "@builder.io/qwik-city";
 
 export const Item = component$((props: { href: string }) => {
     const loc = useLocation()
@@ -11,16 +11,45 @@ export const Item = component$((props: { href: string }) => {
     </Link>
 })
 
-import { LuAlignLeft, LuArrowLeft, LuSquareSlash } from "@qwikest/icons/lucide"
+export interface Collection {
+    id: string,
+    name: string,
+    description: string
+}
+export const collectionCtx = createContextId<Signal<Collection | null>>('collection');
+
+import { LuAlignLeft, LuArrowLeft, LuDisc3, LuSquareSlash } from "@qwikest/icons/lucide"
 export default component$(() => {
     const loc = useLocation()
+    const nav = useNavigate()
+    const collection = useSignal<Collection | null>(null)
+    useContextProvider(collectionCtx, collection);
+
+    useVisibleTask$(async () => {
+        const response = await fetch(`http://localhost/collections?id=${loc.params.collection}`);
+        if(response.status != 200) {
+            nav('/dash/collections/')
+        }
+
+        const data = await response.json();
+        collection.value = data[0];
+    })
+
+    if(!collection.value) return <div class="w-screen h-screen flex flex-row gap-2 items-center justify-center">
+        <LuDisc3 class="animate-spin"/>
+        Loading
+    </div>
 
     return <section class="w-screen h-screen grid grid-col sm:grid-row sm:grid-rows-1 overflow-hidden">
         <div class="sm:h-full border flex sm:flex-col justify-between overflow-x-scroll sm:overflow-auto">
             <nav class="p-4 flex sm:flex-col gap-1 pr-1 sm:pr-4">
                 <Item href={`/dash/collections/${loc.params.collection}`}>
                     <LuSquareSlash />
-                    {loc.params.collection}
+                    {
+                        collection.value 
+                        ? collection.value.id
+                        : '?'
+                    }
                 </Item>
                 <Item href={`/dash/collections/${loc.params.collection}/articles`}>
                     <LuAlignLeft/>

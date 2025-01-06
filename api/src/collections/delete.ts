@@ -1,6 +1,7 @@
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
 import sql from "lib:orm/sql";
+import log from "lib:utils/log";
 import { Article, Collection } from "lib:utils/types";
 
 export default new Elysia().delete('/collections/:collection', async ({ set, params, cookie: { jwt, refresh } }) => {
@@ -27,6 +28,10 @@ export default new Elysia().delete('/collections/:collection', async ({ set, par
     
         if(response.rowCount && response.rowCount > 0) {
             set.status = 'OK';
+            log.trace(`Collection '${params.collection}' has been removed by ${
+                type == 'passed' 
+                ? value.id
+                : value }.`)
             return {
                 articles: articles.rows,
                 collection: response.rows[0]

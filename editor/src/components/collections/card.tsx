@@ -22,7 +22,7 @@ export default component$(({ collection }: Props) => {
         <h1 class="text-xl">
             { collection.name }
         </h1>
-        <p class="font-light">
+        <p class="font-light text-sm">
             { collection.description }
         </p>
         <div class="flex flex-wrap flex-row gap-2 text-xs font-light">

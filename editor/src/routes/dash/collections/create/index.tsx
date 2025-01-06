@@ -1,8 +1,9 @@
 import { component$, useStore } from "@builder.io/qwik";
-import { Link, type DocumentHead } from "@builder.io/qwik-city";
+import { Link, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { LuArrowLeft, LuCalendarPlus, LuListOrdered } from "@qwikest/icons/lucide";
 
 export default component$(() => {
+    const nav = useNavigate()
     const collection = useStore({
         name: '',
         description: '',
@@ -87,9 +88,12 @@ export default component$(() => {
                                 description: collection.description
                             })
                         })
-                        console.info(response)
-                        const body = await response.json()
-                        console.log(body)
+                        if(response.status == 200) {
+                            nav('/dash/collections')
+                        } else {
+                            console.error(response)
+                            console.error(await response.json())
+                        }
                     }}>
                     Insert
                 </div>
