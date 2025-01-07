@@ -42,10 +42,22 @@
     "undici": "*",
     "vite": "5.3.5",
     "@qwikest/icons": "^0.0.13",
+    "@tiptap/core": "^2.11.0",
+    "@tiptap/extension-bubble-menu": "^2.11.0",
+    "@tiptap/extension-color": "^2.11.0",
+    "@tiptap/extension-link": "^2.11.0",
+    "@tiptap/extension-placeholder": "^2.11.0",
+    "@tiptap/extension-subscript": "^2.11.0",
+    "@tiptap/extension-superscript": "^2.11.0",
+    "@tiptap/extension-text-style": "^2.11.0",
+    "@tiptap/extension-typography": "^2.11.0",
+    "@tiptap/extension-underline": "^2.11.0",
+    "@tiptap/pm": "^2.11.0",
+    "@tiptap/starter-kit": "^2.11.0",
+    "idb-keyval": "^6.2.1",
+    "unstorage": "^1.14.4",
     "vite-tsconfig-paths": "^4.2.1"
   },
   "dependencies": {
-    "idb-keyval": "^6.2.1",
-    "unstorage": "^1.14.4"
   }
 }

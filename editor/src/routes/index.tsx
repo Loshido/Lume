@@ -82,17 +82,17 @@ export default component$(() => {
                     <input type="email" 
                         onInput$={(_, t) => data.email = t.value} 
                         placeholder="Enter your email"
-                        class="px-2 py-1.5 text-lg outline-none border rounded" 
+                        class="px-2 py-1.5 text-lg outline-none border" 
                         required />
                     <input type="password" 
                         onInput$={(_, t) => data.password = t.value} 
                         placeholder="Enter your password" 
                         required
-                        class="px-2 py-1.5 text-lg outline-none border rounded" />
+                        class="px-2 py-1.5 text-lg outline-none border" />
 
                     <div class="flex gap-3">
                         <input type="submit" value="Access"
-                            class="px-2 py-1 rounded text-lg font-semibold bg-[#e5e7eb] cursor-pointer
+                            class="px-2.5 py-1 w-fit text-xs font-medium bg-[#e5e7eb] cursor-pointer
                                 hover:bg-red-600 hover:bg-opacity-25 transition-colors" />
 
                     </div>

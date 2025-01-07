@@ -13,7 +13,7 @@ export const Item = component$((props: LinkProps) => {
     const loc = useLocation()
     return <Link {...props} class={["flex gap-2 items-center p-2 transition-colors",
         "hover:bg-opacity-10 rounded cursor-pointer bg-black text-xs",
-        loc.url.pathname == props.href ? 'bg-opacity-15' : 'bg-opacity-0']}>
+        loc.url.pathname == props.href ? 'bg-opacity-10' : 'bg-opacity-0']}>
         <Slot/>
     </Link>
 })

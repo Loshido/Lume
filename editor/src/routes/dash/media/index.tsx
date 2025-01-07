@@ -19,6 +19,7 @@ export default component$(() => {
         createdat: Date
     }[]>([])
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(async () => {
         refreshing.value = true
         const response = await fetch('http://localhost/media');

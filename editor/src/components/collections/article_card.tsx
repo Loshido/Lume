@@ -5,8 +5,8 @@ import { LuEye, LuEyeOff } from "@qwikest/icons/lucide";
 interface Article {
     id: string,
     title: string,
-    createdat: Date,
-    updatedat: Date,
+    createdat: string,
+    updatedat: string,
     draft: boolean
 }
 
@@ -34,13 +34,13 @@ export default component$(({ article, ask_delete, href }: Props) => {
             -
 
             <p>
-                `{ article.id }`
+                { article.id }
             </p>
 
             -
 
             <p>
-                Last update { article.updatedat.toLocaleString(undefined, {
+                Last update { new Date(article.updatedat).toLocaleString(undefined, {
                     dateStyle: 'short',
                     timeStyle: 'short'
                 }) }

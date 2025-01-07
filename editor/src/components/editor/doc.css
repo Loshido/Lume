@@ -1,0 +1,85 @@
+.is-empty::before {
+    color: #33333360;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+#bubble{
+    background-color: #fff;
+    border-radius: 5px;
+    border: 2px solid #eeeeee;
+    width: fit-content;
+    
+    display: flex;
+    flex-direction: row;
+    /* align-items: center; */
+}
+
+#bubble > div{
+    padding: 4px 5px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+
+    transition: background-color .1s ease-in-out;
+}
+#bubble > div:nth-child(1){
+    border-radius: 3px 0 0 3px;
+}
+#bubble > div:nth-child(-1){
+    border: 0 3px 3px 0;
+}
+#bubble > div.active{
+    background-color: #33333320;
+}
+#bubble > div:hover{
+    background-color: #33333340;
+}
+#bubble > div > svg{
+    width: 10px;
+    height: 10px;
+    user-select: none;
+}
+
+#bubble > div:has(span) {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    
+    align-items: center;
+}
+#bubble > div:has(input){
+    width: 100%;
+    /* padding: 0 6px; */
+
+    position: relative;
+}
+#bubble > div > input{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    opacity: 0;
+    width: 100%;
+    height: 28px;
+    
+    outline: none;
+    border: none;
+    appearance: none;
+    color: none;
+    background-color: transparent;
+}
+#bubble > div:has(input) > span{
+    width: 100%;
+    height: fit-content;
+    margin: auto 0;
+    text-align: center;
+}
+
+/* example */
+.doc h1{
+    font-size: 2rem;
+}
