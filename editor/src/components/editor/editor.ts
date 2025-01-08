@@ -1,51 +1,34 @@
 import { Editor } from "@tiptap/core";
 
-import StarterKit from '@tiptap/starter-kit'
-import BubbleMenu from '@tiptap/extension-bubble-menu'
-import Superscript from "@tiptap/extension-superscript"
-import Subscript from "@tiptap/extension-subscript"
-import TextStyle from '@tiptap/extension-text-style'
-import { Color } from "@tiptap/extension-color"
-import Placeholder from "@tiptap/extension-placeholder"
-import Link from "@tiptap/extension-link"
-import Underline from "@tiptap/extension-underline"
-import Typography from "@tiptap/extension-typography"
+import extensions from "./extensions";
+import bubble_ext from "./extensions/bubble";
+import slash_ext from "./extensions/slash";
 
-export default (data: string, element: Element, bubble: HTMLElement) => {
+export default async (data: string) => {
+    const ext = extensions;
+
+    
+    let editor_container = document.getElementById('editor');
+    let bubble = document.getElementById('bubble');
+    let slash = document.getElementById('slash');
+
+    await new Promise((resolve) => {
+        setTimeout(() => {
+            if(!editor_container) editor_container = document.getElementById('editor');
+            if(!bubble) bubble = document.getElementById('bubble');
+            if(!slash) slash = document.getElementById('slash');
+
+            if(bubble && editor_container && slash) {
+                resolve(null)
+            }
+        }, 100)
+    });
+        
+    ext.push(bubble_ext(bubble!))
+    ext.push(slash_ext(slash!))
     const editor = new Editor({
-        element,
-        extensions: [
-            StarterKit,
-            Superscript,
-            Subscript,
-            TextStyle,
-            Color,
-            Typography,
-            Placeholder.configure({
-                placeholder: `Tapez / pour insérer un élement`
-            }),
-            Link.configure({
-                openOnClick: false,
-                autolink: true,
-                defaultProtocol: 'https',
-            }),
-            Underline,
-            BubbleMenu.configure({
-                element: bubble,
-                pluginKey: 'bubble',
-                tippyOptions: {
-                    placement: "top-start",
-                    onShown() {
-                        const event = new Event("bubble-open")
-                        document.dispatchEvent(event);
-                    },
-                    onHide() {
-                        const event = new Event("bubble-close")
-                        document.dispatchEvent(event)
-                    }
-                }
-            })
-        ],
+        element: editor_container!,
+        extensions: ext,
         content: data
     })
 

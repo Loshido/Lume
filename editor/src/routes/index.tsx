@@ -9,7 +9,6 @@ export const onRequest: RequestHandler = async (req) => {
             method: 'POST',
             body: jwt.value
         })
-        console.log(response)
 
         if(response.status == 200) {
             throw req.redirect(302, '/dash')

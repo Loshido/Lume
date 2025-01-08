@@ -1,9 +1,20 @@
 .is-empty::before {
-    color: #33333360;
+    color: #33333330;
     content: attr(data-placeholder);
     float: left;
     height: 0;
     pointer-events: none;
+
+    animation: shows-up 1s ease-in-out;
+}
+
+@keyframes shows-up {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 #bubble{
@@ -77,6 +88,60 @@
     height: fit-content;
     margin: auto 0;
     text-align: center;
+}
+
+#slash{
+    z-index: 99;
+    position: absolute;
+
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #eeeeee;
+    width: 200px;
+    max-height: 300px;
+
+    overflow-y: scroll;
+    user-select: none;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+#slash > p:has(+ div){
+    display: block;
+}
+#slash > p{
+    display: none;
+    margin-top: 4px;
+    padding: 0 4px;
+    font-size: 10px;
+    
+    color: #0008;
+    text-transform: uppercase;
+}
+#slash > div{
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+
+    transition: background-color .1s ease-in-out;
+}
+#slash > div:hover{
+    background-color: #0001;
+}
+
+#slash > div > svg{
+    padding: 1px;
+    width: 12px;
+    height: 12px;
 }
 
 /* example */

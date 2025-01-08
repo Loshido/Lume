@@ -16,11 +16,13 @@ interface Article {
 
 import doc from "~/components/editor/doc.css?inline"
 import buildEditor from "~/components/editor/editor";
+import Slash from "~/components/editor/Slash";
 export default component$(() => {
     const loc = useLocation()
     const nav = useNavigate()
     const article = useSignal<Article | null>(null);
     const editor = useSignal<NoSerialize<Editor>>()
+    const json = useSignal<any>({});
     useStyles$(doc)
 
     // eslint-disable-next-line qwik/no-use-visible-task
@@ -34,18 +36,10 @@ export default component$(() => {
         const data = await response.json();
         article.value = data;
 
-        let element = document.getElementById('editor')
-        await new Promise((r) => setTimeout(() => {
-            element = document.getElementById('editor')
-            r(0)
-        }, 50));
-
-        if(element) {
-            const bubble = document.getElementById('bubble')!;
-            editor.value = noSerialize(buildEditor(article.value!.content, element, bubble));
-        } else {
-            console.log(element)
-        }
+        editor.value = noSerialize(await buildEditor(article.value!.content));
+        editor.value?.on('update', () => {
+            json.value = editor.value?.getJSON()
+        })
     })
 
     if(!article.value)  return <div class="w-screen h-screen flex flex-row gap-2 items-center justify-center">
@@ -72,7 +66,13 @@ export default component$(() => {
         <main class="px-5 py-3 sm:px-16 md:px-32 md:py-4 lg:px-64 xl:px-96">
             <div id="editor" class="doc w-full h-full p-5 border rounded *:outline-none">
                 <Bubble editor={editor.value}/>
+                <Slash editor={editor.value} />
             </div>
+            <pre class="text-xs">
+                {
+                    JSON.stringify(json.value, undefined, 4)
+                }
+            </pre>
         </main>
     </section>
 })

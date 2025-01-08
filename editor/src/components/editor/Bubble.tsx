@@ -1,5 +1,5 @@
 import { $, component$, NoSerialize, PropsOf, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { LuBold, LuCode, LuHighlighter, LuItalic, LuLink, LuPalette, LuStrikethrough, LuSubscript, LuSuperscript, LuUnderline } from "@qwikest/icons/lucide";
+import { LuBold, LuCode, LuItalic, LuLink, LuPalette, LuStrikethrough, LuSubscript, LuSuperscript, LuUnderline } from "@qwikest/icons/lucide";
 import type { Editor } from "@tiptap/core";
 
 interface BubbleProps {
@@ -130,7 +130,6 @@ export default component$(({editor, ...props}: BubbleProps & PropsOf<'div'>) => 
         }
         <div>
             <LuPalette style={`stroke: ${couleur.value};`}/>
-            {/* <span style={`color: ${couleur.value};`}>Couleur</span> */}
             <input 
                 name="couleur"
                 onInput$={(_, t) => {
