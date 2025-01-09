@@ -1,7 +1,8 @@
-import { component$, useContext, useStore } from "@builder.io/qwik";
+import { $, component$, useContext, useStore } from "@builder.io/qwik";
 import { collectionCtx } from "./layout";
 import { LuDisc3, LuLibrarySquare } from "@qwikest/icons/lucide";
 import { useNavigate } from "@builder.io/qwik-city";
+import Dialog from "~/components/dialog";
 
 
 export default component$(() => {
@@ -122,41 +123,34 @@ export default component$(() => {
                     </div>
                 </>
             }
-            <dialog open={edit.delete_confirmation} class={edit.delete_confirmation 
-                    ? 'w-screen h-screen absolute top-0 left-0 bg-transparent' 
-                    : 'hidden'}
-                    onClick$={(e, t) => e.target == t.querySelector('section') ? edit.delete_confirmation = false : null}>
-                <section class="bg-white bg-opacity-50 w-full h-full backdrop-blur-sm
-                    flex flex-col justify-center items-center gap-3">
-                    <p class="w-2/3 text-center">
-                        Are you sure you want to permanently remove this collection ?
-                    </p>
-                    <div class="flex flex-row items-center gap-3 text-xs font-medium">
-                        <div class="px-2.5 py-1 w-fit cursor-pointer select-none
-                            bg-red-100 hover:bg-red-300 transition-colors"
-                            onClick$={async () => {
-                                const url = `http://localhost/collections/${collection.value!.id}`
-                                const response = await fetch(url, {
-                                    method: 'DELETE',
-                                    credentials: 'include'
-                                })
-
-                                if(response.status == 200) {
-                                    nav('/dash/collections');
-                                } else {
-                                    console.error(response)
-                                }
-                            }}>
-                            Yes
-                        </div>
-                        <div class="px-2.5 py-1 w-fit cursor-pointer select-none
-                            bg-blue-100 hover:bg-blue-300 transition-colors"
-                            onClick$={() => edit.delete_confirmation = false}>
-                            No, Cancel
-                        </div>
+            <Dialog active={edit.delete_confirmation} exit={$(() => edit.delete_confirmation = false)}>
+                <p class="w-2/3 text-center">
+                    Are you sure you want to permanently remove this collection ?
+                </p>
+                <div class="flex flex-row items-center gap-3 text-xs font-medium">
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
+                        bg-red-100 hover:bg-red-300 transition-colors"
+                        onClick$={async () => {
+                            const url = `http://localhost/collections/${collection.value!.id}`
+                            const response = await fetch(url, {
+                                method: 'DELETE',
+                                credentials: 'include'
+                            })
+                            if(response.status == 200) {
+                                nav('/dash/collections');
+                            } else {
+                                console.error(response)
+                            }
+                        }}>
+                        Yes
                     </div>
-                </section>
-            </dialog>
+                    <div class="px-2.5 py-1 w-fit cursor-pointer select-none
+                        bg-blue-100 hover:bg-blue-300 transition-colors"
+                        onClick$={() => edit.delete_confirmation = false}>
+                        No, Cancel
+                    </div>
+                </div>
+            </Dialog>
         </div>
 
         {/* cache ttl / stats */}

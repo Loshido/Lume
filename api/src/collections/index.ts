@@ -7,6 +7,7 @@ import del from "./delete";
 import get_article from "./article/get"
 import post_article from "./article/post"
 import patch_article from "./article/patch"
+import delete_article from "./article/delete"
 import patch from "./patch";
 
 const app = new Elysia({
@@ -21,6 +22,7 @@ app.group('', (app) => app
     .use(get_article)
     .use(post_article)
     .use(patch_article)
+    .use(delete_article)
 )
 
 export default app;

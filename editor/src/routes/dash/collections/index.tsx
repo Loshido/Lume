@@ -37,7 +37,7 @@ export default component$(() => {
                     Collections
                 </h1>
                 <p class="font-light text-sm">
-                    📡 Create, edit, and access your data seamlessly
+                    Create, edit, and access your data seamlessly
                 </p>
             </div>
 

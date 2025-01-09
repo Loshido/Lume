@@ -59,22 +59,7 @@ export default component$(() => {
                     </div>
                 </div>
             </Link>
-            <div class="flex flex-row gap-3">
-                {/* Data */}
-                <div class="text-xs p-3">
-                    <p class="mb-1 text-black text-opacity-25">data that will be inserted</p>
-                    <pre>
-                        {
-                            JSON.stringify(collection, undefined, 4)
-                        }
-                    </pre>
-                </div>
-                {/* Errors & Informations */}
-                <div class="text-xs p-3">
-
-                </div>
-            </div>
-            <div class="flex flex-row items-center gap-3 text-xs font-medium">
+            <div class="mt-3 flex flex-row items-center gap-3 text-xs font-medium">
                 <div class="px-2.5 py-1 w-fit cursor-pointer bg-opacity-15 bg-green-700 hover:bg-opacity-25"
                     onClick$={async () => {
                         const response = await fetch('http://localhost/collections', {

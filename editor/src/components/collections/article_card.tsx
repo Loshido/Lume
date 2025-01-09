@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, QRL } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { LuEye, LuEyeOff } from "@qwikest/icons/lucide";
 
@@ -12,7 +12,7 @@ interface Article {
 
 type Props = {
     article: Article,
-    ask_delete?: (id: string) => void,
+    ask_delete?: QRL<(id: string) => void>,
     href?: string,
 }
 

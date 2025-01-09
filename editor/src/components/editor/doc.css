@@ -50,8 +50,8 @@
     background-color: #33333340;
 }
 #bubble > div > svg{
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     user-select: none;
 }
 
@@ -109,10 +109,16 @@
     gap: 2px;
 }
 
-#slash > p:has(+ div){
+#slash > section{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+#slash p:has(+ div){
     display: block;
 }
-#slash > p{
+#slash p{
     display: none;
     margin-top: 4px;
     padding: 0 4px;
@@ -121,7 +127,7 @@
     color: #0008;
     text-transform: uppercase;
 }
-#slash > div{
+#slash div{
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -134,11 +140,11 @@
 
     transition: background-color .1s ease-in-out;
 }
-#slash > div:hover{
+#slash div:hover{
     background-color: #0001;
 }
 
-#slash > div > svg{
+#slash div > svg{
     padding: 1px;
     width: 12px;
     height: 12px;

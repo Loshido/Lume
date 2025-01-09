@@ -9,7 +9,7 @@ RUN bun build /app/src/index.ts --outdir /app/build/ --target bun --sourcemap
 FROM oven/bun:alpine AS production
 WORKDIR /app
 
-RUN mkdir /data && mkdir /data/media && mkdir /data/logs
+RUN mkdir /data && mkdir /data/media && mkdir /data/logs && mkdir /data/updates
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/build/index.js /app/index.js
 

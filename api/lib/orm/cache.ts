@@ -19,6 +19,8 @@ type UncacheResponse<T> =
     { type: 'callback', value: T } |
     { type: 'failed', value: number }
 
+// This function fetch some data from the cache
+// if the data is expired, it fetches the data
 export async function uncache<T>(key: string, 
     cb: (cache: CallbackCacheFn<T>) => Promise<T | number>, 
     ttl: number = 1000 * 60): Promise<UncacheResponse<T>> {

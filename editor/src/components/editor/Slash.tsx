@@ -1,13 +1,15 @@
-import { $, component$, JSXOutput, NoSerialize, PropsOf, QRL, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, JSXOutput, NoSerialize, PropsOf, QRL, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { LuCode, LuHeading1, LuHeading2, LuHeading3, LuList, LuListOrdered, LuQuote, LuText, LuWand2 } from "@qwikest/icons/lucide";
 import type { ChainedCommands, Editor } from "@tiptap/core";
 
-const items: {
+interface Item{
     icon: JSXOutput,
     content: string,
     category: string,
     action?: QRL<(cmd: ChainedCommands) => void>
-}[] = [
+}
+
+const items_list: Item[] = [
     {
         icon: <LuWand2/>,
         content: "AI Writer",
@@ -87,31 +89,34 @@ const items: {
 
 export default component$(({ editor, ...props }: PropsOf<'div'> & { editor: NoSerialize<Editor> }) => {
     const open = useSignal(false);
-    const index = useSignal(0)
+    const index = useSignal(0);
+    const rect = useSignal([0, 0])
+    const items = useStore<Item[]>([]);
 
     // eslint-disable-next-line qwik/no-use-visible-task
-    useVisibleTask$(() => {
-        document.addEventListener('slash-open', () => {
-            open.value = true
-        })
-        
-        document.addEventListener('slash-close', () => {
-            open.value = false
-        })
+    useVisibleTask$(({ cleanup }) => {
+        items.push(...items_list);
 
         const keys = ['ArrowUp', 'ArrowDown', 'Enter'];
-        document.addEventListener('keydown', async (e) => {
+        const opens = () => open.value = true
+        const closes = () => open.value = false
+        // @ts-ignore
+        const relocate = (e: Event) => rect.value = e.detail.rect
+        const keydown = async (e: KeyboardEvent) => {
+            // If slash-menu is not open, we do nothing
             if(!open.value) return
-            if(keys.includes(e.key)) {
-                e.preventDefault();
-            }
+            // We prevent the editor to handle these keys
+            if(keys.includes(e.key)) e.preventDefault();
 
+            
             const i = index.value;
             if(e.key == keys[0]) {
+                // the item above or the last one
                 index.value = i == 0 
                     ? items.length - 1
                     : i - 1;
             } else if(e.key == keys[1]) {
+                // the item bellow or the first one.
                 index.value = i == items.length - 1 
                     ? 0 
                     : i + 1;
@@ -131,10 +136,28 @@ export default component$(({ editor, ...props }: PropsOf<'div'> & { editor: NoSe
                     await items[i].action(editor.chain());
                 }
             }
+        }
+
+        document.addEventListener('slash-open', opens);
+        document.addEventListener('slash-close', closes);
+        document.addEventListener('slash-relocate', relocate);
+        document.addEventListener('keydown', keydown);
+        
+        cleanup(() => {
+            document.removeEventListener('slash-open', opens);
+            document.removeEventListener('slash-close', closes);
+            document.removeEventListener('slash-relocate', relocate);
+            document.removeEventListener('keydown', keydown);
+            items.splice(0, items.length)
+            index.value = 0;
         })
     })
 
-    return <div id="slash" {...props}>
+    return <div id="slash" style={{
+        top: rect.value[0],
+        left: rect.value[1],
+        display: open.value ? undefined : 'none'
+    }}  {...props}>
         {
             items
                 .reduce<string[]>((a, c) => {
@@ -143,8 +166,8 @@ export default component$(({ editor, ...props }: PropsOf<'div'> & { editor: NoSe
                     }
                     return a;
                 }, [])
-                .map((category, i, categories) => <>
-                    <p key={i}>
+                .map((category, i, categories) => <section key={i}>
+                    <p>
                         {
                             category
                         }
@@ -173,7 +196,7 @@ export default component$(({ editor, ...props }: PropsOf<'div'> & { editor: NoSe
                                 }
                             </div>)
                     }
-                </>)
+                </section>)
         }
     </div>
 })

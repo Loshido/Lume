@@ -43,6 +43,7 @@ export default new Elysia().delete('/collections/:collection', async ({ set, par
     }
     catch(e) {
         client.release();
+        console.error(e)
         set.status = 'Internal Server Error';
         return null;
     }

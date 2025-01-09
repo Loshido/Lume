@@ -99,7 +99,7 @@ export default component$(() => {
                             body: JSON.stringify({
                                 title: article.title,
                                 draft: article.draft,
-                                content: "Hello, World!"
+                                content: `[{"type": "text","text": "Hello, World!"}]`
                             })
                         });
 

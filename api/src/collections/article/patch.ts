@@ -1,6 +1,7 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
+import storage from "lib:orm/cache";
 import sql from "lib:orm/sql";
 import { Article } from "lib:utils/types";
 
@@ -36,6 +37,8 @@ export default new Elysia()
             client.release()
 
             if(response.rowCount && response.rowCount > 0) {
+                // cache is not updated
+                await storage.removeItem(`/collections/${params.collection}/${params.article}`)
                 set.status = 'OK';
                 return response.rows[0].id;
             } else {

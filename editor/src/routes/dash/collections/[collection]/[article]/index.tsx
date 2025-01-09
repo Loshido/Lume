@@ -22,7 +22,7 @@ export default component$(() => {
     const nav = useNavigate()
     const article = useSignal<Article | null>(null);
     const editor = useSignal<NoSerialize<Editor>>()
-    const json = useSignal<any>({});
+    const saved = useSignal(true)
     useStyles$(doc)
 
     // eslint-disable-next-line qwik/no-use-visible-task
@@ -38,7 +38,7 @@ export default component$(() => {
 
         editor.value = noSerialize(await buildEditor(article.value!.content));
         editor.value?.on('update', () => {
-            json.value = editor.value?.getJSON()
+            saved.value = false;
         })
     })
 
@@ -56,10 +56,38 @@ export default component$(() => {
                     <LuArrowLeft/>
                     Collection
                 </Link>
-                <div class="px-2.5 py-1 w-fit select-none flex flex-row items-center gap-1
-                    bg-green-100 hover:bg-green-300 transition-colors cursor-pointer">
+                <div class={["px-2.5 py-1 w-fit select-none flex flex-row items-center gap-1",
+                    "bg-green-100 hover:bg-green-300 transition-colors cursor-pointer",
+                    saved.value ? 'bg-green-100' : 'bg-green-400']}
+                    onClick$={async () => {
+                        const data = editor.value?.getJSON().content;
+                        const url = `http://localhost/collections/${loc.params.collection}/${loc.params.article}`
+                        if(!data) return
+
+                        const response = await fetch(url, {
+                            method: 'PATCH',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                content: data
+                            })
+                        })
+
+                        if(response.status === 200) {
+                            saved.value = true
+                        } else {
+                            saved.value = false
+                        }
+
+                    }}>
                     <LuImport/>
-                    Save
+                    <span>
+                        {
+                            saved.value ? 'Saved' : 'Save'
+                        }
+                    </span>
                 </div>
             </div>
         </header>
@@ -68,11 +96,6 @@ export default component$(() => {
                 <Bubble editor={editor.value}/>
                 <Slash editor={editor.value} />
             </div>
-            <pre class="text-xs">
-                {
-                    JSON.stringify(json.value, undefined, 4)
-                }
-            </pre>
         </main>
     </section>
 })

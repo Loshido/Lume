@@ -2,7 +2,6 @@ import { Editor } from "@tiptap/core";
 
 import extensions from "./extensions";
 import bubble_ext from "./extensions/bubble";
-import slash_ext from "./extensions/slash";
 
 export default async (data: string) => {
     const ext = extensions;
@@ -25,11 +24,13 @@ export default async (data: string) => {
     });
         
     ext.push(bubble_ext(bubble!))
-    ext.push(slash_ext(slash!))
     const editor = new Editor({
         element: editor_container!,
         extensions: ext,
-        content: data
+        content: {
+            type: "doc",
+            content: JSON.parse(data)
+        }
     })
 
     return editor
