@@ -16,7 +16,7 @@ export default component$(() => {
     return <>
         <header class="flex flex-row gap-2 py-4 justify-start w-full">
             <Link class="m-2 p-2 rounded-full bg-black bg-opacity-0 
-                cursor-pointer hover:bg-opacity-15" href={`/dash/collections/${loc.params.collection}/articles/`}>
+                cursor-pointer hover:bg-opacity-15" href={`/dash/collections/${loc.params.collection}/`}>
                 <LuArrowLeft/>
             </Link>
             <div>
@@ -113,7 +113,7 @@ export default component$(() => {
                     Create
                 </div>
                 <Link class="px-2.5 py-1 w-fit cursor-pointer bg-opacity-15 bg-red-700 hover:bg-opacity-25"
-                    href={`/dash/collections/${loc.params.collection}/articles`}>
+                    href={`/dash/collections/${loc.params.collection}/`}>
                     Cancel
                 </Link>
                 <p id="error" class="text-xs w-64 font-light"></p>
@@ -130,5 +130,8 @@ export const head: DocumentHead = {
             name: "description",
             content: "Lume's editor",
         },
-    ]
+    ],
+    frontmatter: {
+        dash: true
+    }
 };

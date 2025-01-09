@@ -19,7 +19,10 @@ export default new Elysia().post('/collections', async ({ body, set, cookie: { j
     const client = await sql();
 
     // ID are in kebab-case
-    const id = kebabCase(body.title);
+    const id = kebabCase(body.title)
+        .replaceAll(' ', '-')
+        .replaceAll('_', '-')
+        .replaceAll(':', '-');
     
     if(id.length < 5) {
         set.status = 'Bad Request';
