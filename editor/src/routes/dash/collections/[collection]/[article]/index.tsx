@@ -52,7 +52,7 @@ export default component$(() => {
             <div class="flex flex-row items-center text-xs font-medium gap-2">
                 <Link class="px-2.5 py-1 w-fit select-none flex flex-row items-center gap-1
                     bg-blue-100 hover:bg-blue-300 transition-colors cursor-pointer"
-                    href={`/dash/collections/${loc.params.collection}/articles`}>
+                    href={`/dash/collections/${loc.params.collection}/`}>
                     <LuArrowLeft/>
                     Collection
                 </Link>
@@ -71,13 +71,19 @@ export default component$(() => {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                content: data
+                                content: JSON.stringify(data)
                             })
                         })
 
                         if(response.status === 200) {
                             saved.value = true
                         } else {
+                            console.log(response)
+                            try {
+                                console.log(await response.json())
+                            } catch(e) {
+                                console.error(e)
+                            }
                             saved.value = false
                         }
 
@@ -107,6 +113,12 @@ export const head: DocumentHead = (head) => ({
             name: "description",
             content: "Lume's editor",
         },
+    ],
+    links: [
+        {
+            rel: "stylesheet",
+            href: 'http://localhost/css'
+        }
     ],
     frontmatter: {
         layout: false

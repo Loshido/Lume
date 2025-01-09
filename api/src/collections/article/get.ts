@@ -1,3 +1,4 @@
+import { generateHTML } from "@tiptap/html";
 import consola from "consola";
 import Elysia, { t } from "elysia";
 import { uncache } from "lib:orm/cache";
@@ -58,7 +59,6 @@ export default new Elysia()
         }
     })
     .get('/collections/:collection/:article/head', async ({ params, set }) => {
-
         const data = await uncache<Head>(`/collections/${params.collection}/${params.article}/head`, 
             async (cache) => {
                 const client = await sql();

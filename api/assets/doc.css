@@ -1,0 +1,48 @@
+.doc h1{
+    font-size: 2rem;
+    line-height: 3rem;
+    font-weight: 700;
+}
+.doc h2{
+    font-size: 1.6rem;
+    line-height: 2.5rem;
+    font-weight: 600;
+}
+.doc h3{
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: 500;
+}
+
+.doc ul{
+    margin: 4px;
+    list-style: square;
+    list-style-position: inside;
+}
+
+.doc ol{
+    margin: 4px;
+    list-style: decimal;
+    list-style-position: inside;
+}
+
+.doc blockquote{
+    margin: 4px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+
+    background-color: #5551;
+}
+
+.doc pre:has(code) {
+    margin: 4px 0;
+    padding: 8px;
+    border-radius: 4px;
+
+    background-color: #5551;
+}
+
+.doc :not(pre) > code{
+    background-color: #0002;
+    padding: 2px 4px;
+}

@@ -34,7 +34,6 @@ export default new Elysia({
         }
 
         const distant_files = response.rows.map(v => v.id);
-        console.log(folder)
         for(const file of folder) {
             if(!distant_files.includes(file.toString())) {
                 fs.rmSync(MEDIA_FOLDER + `/${file}`);

@@ -39,6 +39,7 @@ export default new Elysia()
             if(response.rowCount && response.rowCount > 0) {
                 // cache is not updated
                 await storage.removeItem(`/collections/${params.collection}/${params.article}`)
+                await storage.removeItem(`/collections/${params.collection}/${params.article}/html`)
                 set.status = 'OK';
                 return response.rows[0].id;
             } else {

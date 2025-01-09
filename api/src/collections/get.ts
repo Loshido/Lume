@@ -1,6 +1,6 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
-import storage, { uncache } from "lib:orm/cache";
+import { uncache } from "lib:orm/cache";
 import sql from "lib:orm/sql";
 import { Article } from "lib:utils/types";
 

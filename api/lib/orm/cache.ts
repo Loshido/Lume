@@ -25,7 +25,7 @@ export async function uncache<T>(key: string,
     cb: (cache: CallbackCacheFn<T>) => Promise<T | number>, 
     ttl: number = 1000 * 60): Promise<UncacheResponse<T>> {
     const cache = await storage.get<Cache<T>>(key)
-    if(cache && cache.tm > Date.now() + ttl) {
+    if(cache && cache.tm < Date.now() + ttl) {
         consola.trace(`cache used with key: ${key}`);
         return {
             type: 'cache',
