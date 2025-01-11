@@ -91,7 +91,7 @@
 }
 
 #slash{
-    z-index: 99;
+    z-index: 40;
     position: absolute;
 
     padding: 4px;

@@ -1,6 +1,7 @@
 import consola from "consola";
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
+import storage from "lib:orm/cache";
 import sql from "lib:orm/sql";
 import { Article } from "lib:utils/types";
 
@@ -21,19 +22,21 @@ export default new Elysia()
         
         try {
             const response = await client.query<Article>(`INSERT INTO articles
-                (collection, id, title, content, draft) 
-                VALUES ($1, $2, $3, $4, $5)
+                (collection, id, title, description, content, draft) 
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *`, 
                 [
                     params.collection,
                     params.article,
                     body.title,
-                    body.content,
+                    body.description,
+                    JSON.stringify(body.content),
                     body.draft
                 ]);
             client.release()
 
             if(response.rowCount && response.rowCount > 0) {
+                await storage.removeItem(`/collections/${params.collection}`);
                 set.status = 'OK';
                 return response.rows[0].id;
             } else {
@@ -50,7 +53,11 @@ export default new Elysia()
     }, {
         body: t.Object({
             title: t.String(),
-            content: t.String(),
+            description: t.String(),
+            content: t.Object({
+                head: t.Array(t.Record(t.String(), t.String())),
+                content: t.Array(t.Any()),
+            }),
             draft: t.Boolean()
         }),
         response: {

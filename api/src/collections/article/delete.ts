@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
+import storage from "lib:orm/cache";
 import sql from "lib:orm/sql";
 import log from "lib:utils/log";
 import { Article } from "lib:utils/types";
@@ -24,6 +25,9 @@ export default new Elysia().delete('/collections/:collection/:article', async ({
         client.release();
     
         if(response.rowCount && response.rowCount > 0) {
+            await storage.removeItem(`/collections/${params.collection}`);
+            await storage.removeItem(`/collections/${params.collection}/${params.article}`);
+            await storage.removeItem(`/collections/${params.collection}/${params.article}/html`);
             set.status = 'OK';
             log.trace(`Article '${params.article}' from '${params.collection}' has been removed`)
             return response.rows[0];
@@ -43,7 +47,10 @@ export default new Elysia().delete('/collections/:collection/:article', async ({
             collection: t.String(),
             id: t.String(),
             title: t.String(),
-            content: t.String(),
+            content: t.Object({
+                head: t.Array(t.Record(t.String(), t.String())),
+                content: t.Array(t.Any()),
+            }),
             createdat: t.Date(),
             updatedat: t.Date(),
             draft: t.Boolean()

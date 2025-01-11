@@ -3,7 +3,7 @@ import { Editor } from "@tiptap/core";
 import extensions from "./extensions";
 import bubble_ext from "./extensions/bubble";
 
-export default async (data: string) => {
+export default async (data: any[]) => {
     const ext = extensions;
     
     let editor_container = document.getElementById('editor');
@@ -20,13 +20,15 @@ export default async (data: string) => {
         }, 100)
     });
     
+    const previous_bubble = ext.findIndex(e => e.name == "bubbleMenu");
+    if(previous_bubble != -1) ext.splice(previous_bubble, 1);
     ext.push(bubble_ext(bubble!))
     const editor = new Editor({
         element: editor_container!,
         extensions: ext,
         content: {
             type: "doc",
-            content: JSON.parse(data)
+            content: data
         }
     })
 

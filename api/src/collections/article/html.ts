@@ -28,6 +28,13 @@ const extension = [
     Underline,
 ]
 
+interface Response {
+    content: {
+        head: Record<string, string>[],
+        content: any[]
+    }
+}
+
 export default new Elysia()
     .get('/collections/:collection/:article/html', async ({ params, set }) => {
         const data = await uncache<string>(`/collections/${params.collection}/${params.article}/html`, 
@@ -35,7 +42,7 @@ export default new Elysia()
                 const client = await sql();
         
                 try {
-                    const response = await client.query<{ content: string }>(`
+                    const response = await client.query<Response>(`
                         SELECT content 
                         FROM articles
                         WHERE collection = $1 AND id = $2`, 
@@ -43,9 +50,10 @@ export default new Elysia()
                     client.release()
                     
                     if(response.rowCount && response.rowCount > 0) {
+                        const content = response.rows[0].content.content
                         const html = generateHTML({
                             type: 'doc',
-                            content: JSON.parse(response.rows[0].content)
+                            content
                         }, extension)
                         await cache(html)
                         return html;

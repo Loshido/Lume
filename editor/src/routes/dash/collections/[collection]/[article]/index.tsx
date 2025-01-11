@@ -4,16 +4,7 @@ import { LuArrowLeft, LuDisc3, LuImport, LuListTree } from "@qwikest/icons/lucid
 import type { Editor } from "@tiptap/core";
 import Dialog from "~/components/dialog";
 import Bubble from "~/components/editor/Bubble";
-
-interface Article {
-    collection: string,
-    id: string,
-    title: string,
-    content: string,
-    createdat: string,
-    updatedat: string,
-    draft: boolean
-}
+import type { Article } from "~/lib/types";
 
 import doc from "~/components/editor/doc.css?inline"
 import buildEditor from "~/components/editor/editor";
@@ -27,7 +18,7 @@ export default component$(() => {
     const editor = useSignal<NoSerialize<Editor>>()
     const option = useStore({
         saved: true,
-        meta: false
+        meta: true
     })
     useStyles$(doc)
 
@@ -42,7 +33,7 @@ export default component$(() => {
         const data = await response.json();
         article.value = data;
 
-        editor.value = noSerialize(await buildEditor(article.value!.content));
+        editor.value = noSerialize(await buildEditor(article.value!.content.content));
         editor.value?.on('update', () => {
             option.saved = false
         })
@@ -63,7 +54,7 @@ export default component$(() => {
                     Collection
                 </Link>
                 <div class={["px-2.5 py-1 w-fit select-none flex flex-row items-center gap-1 transition-colors",
-                    option.saved ? 'bg-green-100' : 'bg-green-400 hover:bg-green-300 cursor-pointer']}
+                    option.saved ? 'bg-green-100' : 'bg-green-300 hover:bg-green-200 cursor-pointer']}
                     onClick$={async () => {
                         if(option.saved) {
                             return
@@ -117,7 +108,7 @@ export default component$(() => {
                 <Prompt editor={editor.value} />
             </div>
             <Dialog active={option.meta} exit={$(() => option.meta = false)} id="meta" style="align-items: end">
-                <Meta/>
+                <Meta article={article.value} exit={$(() => option.meta = false)} />
             </Dialog>
         </main>
     </section>

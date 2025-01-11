@@ -1,4 +1,4 @@
-import { $, component$, NoSerialize, PropsOf, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, NoSerialize, PropsOf, useOnDocument, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { LuBold, LuCode, LuItalic, LuLink, LuPalette, LuStrikethrough, LuSubscript, LuSuperscript, LuUnderline } from "@qwikest/icons/lucide";
 import type { Editor } from "@tiptap/core";
 
@@ -96,27 +96,24 @@ export default component$(({editor, ...props}: BubbleProps & PropsOf<'div'>) => 
     ]
     const names = buttons.map(button => button.name)
 
-    // eslint-disable-next-line qwik/no-use-visible-task
-    useVisibleTask$(() => {
-        document.addEventListener('bubble-open', () => {
-            if(!editor) return
-            const attributes = editor.getAttributes('textStyle')
-            couleur.value = attributes.color || "#000";
-
-            const marks = editor.state.selection.$head.marks()
-            marks.forEach(mark => {
-                const e = document.getElementById(`bubble-${mark.type.name}`)
-                e?.classList.add('active')
-            })
+    useOnDocument('bubble-open', $(() => {
+        if(!editor) return
+        const attributes = editor.getAttributes('textStyle')
+        couleur.value = attributes.color || "#000";
+    
+        const marks = editor.state.selection.$head.marks()
+        marks.forEach(mark => {
+            const e = document.getElementById(`bubble-${mark.type.name}`)
+            e?.classList.add('active')
         })
+    }))
 
-        document.addEventListener('bubble-close', () => {
-            names.forEach(n => {
-                const e = document.getElementById(`bubble-${n}`)
-                e?.classList.remove('active')
-            })  
-        })
-    })
+    useOnDocument('bubble-close', $(() => {
+        names.forEach(n => {
+            const e = document.getElementById(`bubble-${n}`)
+            e?.classList.remove('active')
+        })  
+    }))
 
     return <div id="bubble" {...props}>
         {

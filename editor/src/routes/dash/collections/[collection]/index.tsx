@@ -1,15 +1,14 @@
-import { $, component$, useContext, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, useContext, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { collectionCtx } from "./layout";
 import { LuDisc3, LuPenLine, LuRefreshCcw, LuSquareSlash, LuX } from "@qwikest/icons/lucide";
 import { DocumentHead, Link, useLocation, useNavigate } from "@builder.io/qwik-city";
 import Article_card from "~/components/collections/article_card";
 import Confirmation from "~/components/dialog/confirmation";
-import { isBrowser } from "@builder.io/qwik/build";
 
 interface Article {
     id: string,
     title: string,
-    createdat: string,
+    description: string,
     updatedat: string,
     draft: boolean
 }
@@ -192,7 +191,7 @@ export default component$(() => {
                 <Link class="px-2.5 py-1 w-fit cursor-pointer select-none
                     bg-blue-100 hover:bg-blue-300 transition-colors
                     flex flex-row gap-1 items-center" href={`/dash/collections/${loc.params.collection}/create/`}>
-                    Create
+                    Create an article
                 </Link>
                 <div class="p-1.5 w-fit cursor-pointer select-none
                     bg-black bg-opacity-5 hover:bg-opacity-15 transition-colors
@@ -210,7 +209,7 @@ export default component$(() => {
                     <Article_card article={article} key={article.id} 
                         href={`/dash/collections/${loc.params.collection}/${article.id}/`}
                         ask_delete={$((id) => {option.deletePending = id})}/>)
-                : <section class="flex w-full h-full items-center justify-center 
+                : <section class="flex w-full min-h-96 items-center justify-center 
                     gap-2 text-black text-opacity-25 select-none
                     xl:col-span-3 md:col-span-2">
                     <LuSquareSlash/> Empty  

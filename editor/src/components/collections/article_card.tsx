@@ -1,11 +1,11 @@
 import { component$, QRL } from "@builder.io/qwik";
-import { Link, useLocation } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
 import { LuEye, LuEyeOff } from "@qwikest/icons/lucide";
 
 interface Article {
     id: string,
     title: string,
-    createdat: string,
+    description: string,
     updatedat: string,
     draft: boolean
 }
@@ -23,6 +23,11 @@ export default component$(({ article, ask_delete, href }: Props) => {
                 article.title
             }
         </h1>
+        <p class="text-sm">
+            {
+                article.description
+            }
+        </p>
         <div class="flex flex-row gap-1 items-center text-xs font-thin mb-2">
 
             {

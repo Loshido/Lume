@@ -8,7 +8,8 @@ CREATE TABLE articles(
     collection TEXT references collections(id),
     id TEXT PRIMARY KEY, -- id in kebab-case
     title TEXT, -- article name
-    content TEXT,
+    description TEXT,
+    data JSONB,
     createdAt TIMESTAMP DEFAULT NOW(), 
     updatedAt TIMESTAMP DEFAULT NOW(),
     draft BOOLEAN DEFAULT true

@@ -5,7 +5,7 @@ import sql from "lib:orm/sql";
 import { Article } from "lib:utils/types";
 
 type ArticleHead = Pick<Article, 
-    'id' | 'title' | 'createdat' | 'updatedat' | 'draft'>;
+    'id' | 'title' | 'updatedat' | 'draft' | 'description'>;
 
 interface Collection {
     id: string,
@@ -73,7 +73,7 @@ export default new Elysia()
     
             try {
                 const response = await client.query<ArticleHead>(
-                    `SELECT * FROM articles WHERE collection = $1;`,
+                    `SELECT id, title, description, updatedat, draft FROM articles WHERE collection = $1;`,
                     [ params.collection ]);
                 client.release();
     
@@ -104,7 +104,7 @@ export default new Elysia()
                 t.Object({
                     id: t.String(),
                     title: t.String(),
-                    createdat: t.Date(),
+                    description: t.String(),
                     updatedat: t.Date(),
                     draft: t.Boolean()
                 })

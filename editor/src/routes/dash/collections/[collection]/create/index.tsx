@@ -8,7 +8,7 @@ export default component$(() => {
     const article = useStore({
         id: "",
         title: "",
-        createdat: new Date().toString(),
+        description: "",
         updatedat: new Date().toString(),
         draft: true
     });
@@ -38,6 +38,10 @@ export default component$(() => {
                     onInput$={(_, t) => article.title = t.innerText}>
                     Title
                 </h1>
+                <p class="outline-none text-sm" contentEditable="true"
+                    onInput$={(_, t) => article.description = t.innerText}>
+                    Description
+                </p>
                 <div class="flex flex-row gap-1 items-center text-xs font-thin mb-2">
         
                     {
@@ -98,16 +102,32 @@ export default component$(() => {
                             },
                             body: JSON.stringify({
                                 title: article.title,
+                                description: article.description,
                                 draft: article.draft,
-                                content: `[{"type": "text","text": "Hello, World!"}]`
+                                content: {
+                                    head: [],
+                                    content: [
+                                        {
+                                            "type": "paragraph",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Hello, World!"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
                             })
                         });
 
                         if(response.status == 200) {
                             nav(`/dash/collections/${loc.params.collection}/${id}`)
+                        } else {
+                            const data = await response.json()
+                            console.error(data)
                         }
 
-                        console.log(response)
                         error.innerText = response.status.toString()
                     }}>
                     Create

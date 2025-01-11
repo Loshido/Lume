@@ -4,11 +4,17 @@ export interface Collection {
     description: string | null
 }
 
+interface ArticleData {
+    head: Record<string, string>[],
+    content: any[],
+}
+
 export interface Article {
     collection: string,
     id: string,
     title: string,
-    content: string,
+    description: string,
+    content: ArticleData,
     createdat: Date,
     updatedat: Date,
     draft: boolean

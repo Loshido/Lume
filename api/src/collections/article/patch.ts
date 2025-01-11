@@ -20,11 +20,14 @@ export default new Elysia()
 
         const client = await sql();
 
+        // into "key = $1, key2 = $2..."
         const keys = Object.keys(body)
             .map((key, i) => `${key} = $${i + 1}`)
             .join(', ');
 
-        const values = Object.values(body)
+        // content value need to be stringified
+        const values = Object.entries(body)
+            .map(([key, value]) => key == 'content' ? JSON.stringify(value) : value)
         const query = `UPDATE articles 
             SET ${keys} 
             WHERE id = $${ values.length + 1 } AND collection = $${values.length + 2}
@@ -38,6 +41,7 @@ export default new Elysia()
 
             if(response.rowCount && response.rowCount > 0) {
                 // cache is not updated
+                await storage.removeItem(`/collections/${params.collection}`)
                 await storage.removeItem(`/collections/${params.collection}/${params.article}`)
                 await storage.removeItem(`/collections/${params.collection}/${params.article}/html`)
                 set.status = 'OK';
@@ -57,7 +61,11 @@ export default new Elysia()
             collection: t.Optional(t.String()),
             id: t.Optional(t.String()),
             title: t.Optional(t.String()),
-            content: t.Optional(t.String()),
+            description: t.Optional(t.String()),
+            content: t.Optional(t.Object({
+                head: t.Array(t.Record(t.String(), t.String())),
+                content: t.Array(t.Any()),
+            })),
             draft: t.Optional(t.Boolean()),
         }),
         response: {
