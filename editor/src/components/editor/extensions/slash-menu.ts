@@ -1,30 +1,7 @@
-import { Extension } from "@tiptap/core";
 import type { Editor, Range } from "@tiptap/core";
-import Suggestion, { type SuggestionOptions } from "@tiptap/suggestion";
 
-const Command = Extension.create({
-    name: "slash-command",
-    addOptions() {
-        return {
-            suggestion: {
-                char: "/",
-                command: ({ editor, range, props }) => {
-                    props.command({ editor, range });
-                },
-            } as SuggestionOptions,
-        };
-    },
-    addProseMirrorPlugins() {
-        return [
-            Suggestion({
-                editor: this.editor,
-                ...this.options.suggestion,
-            }),
-        ];
-    },
-});
 
-const slashRender = () => ({
+export default () => ({
     onStart: (props: { editor: Editor; range: Range }) => {
         // start tells the thing to appear
 
@@ -63,5 +40,3 @@ const slashRender = () => ({
         document.dispatchEvent(hide);
     },
 });
-
-export { Command, slashRender };

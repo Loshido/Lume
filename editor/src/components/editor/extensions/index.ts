@@ -9,7 +9,8 @@ import Underline from "@tiptap/extension-underline"
 import Typography from "@tiptap/extension-typography"
 import { type Extensions } from "@tiptap/core";
 import { DisableEnter } from './slash'
-import { Command, slashRender } from './slash-menu'
+import Command from './command'
+import slashRender from './slash-menu'
 
 export default [
     StarterKit,

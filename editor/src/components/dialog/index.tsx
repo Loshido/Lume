@@ -7,7 +7,7 @@ interface Props {
 
 export default component$(({ active, exit, class: classList, ...props }: Props & PropsOf<'section'>) => {
     return <dialog open={active} class={active
-            ? 'w-screen h-screen absolute top-0 left-0 bg-transparent' 
+            ? 'w-screen h-screen absolute top-0 left-0 bg-transparent z-50' 
             : 'hidden'}
             onClick$={async (e, t) => e.target == t.querySelector('section') ? exit() : null}>
         <section {...props} class={["bg-white bg-opacity-50 w-full h-full backdrop-blur-sm",

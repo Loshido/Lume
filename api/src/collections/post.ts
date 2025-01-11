@@ -2,6 +2,7 @@ import Elysia, { t } from "elysia";
 import sql from "lib:orm/sql";
 import { kebabCase } from "scule";
 import { factory } from "lib:auth/jwt";
+import storage from "lib:orm/cache";
 
 // Creates a new collection of articles
 export default new Elysia().post('/collections', async ({ body, set, cookie: { jwt, refresh } }) => {
@@ -35,6 +36,7 @@ export default new Elysia().post('/collections', async ({ body, set, cookie: { j
         client.release();
     
         if(response.rowCount && response.rowCount > 0) {
+            await storage.removeItem('/collections')
             set.status = 'OK';
             return response.rows[0];
         } else {

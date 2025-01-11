@@ -5,6 +5,8 @@ import type { ChainedCommands, Editor } from "@tiptap/core";
 interface Item{
     icon: JSXOutput,
     content: string,
+    class?: string,
+    activeClass?: string,
     category: string,
     action?: QRL<(cmd: ChainedCommands) => void>
 }
@@ -13,7 +15,12 @@ const items_list: Item[] = [
     {
         icon: <LuWand2/>,
         content: "AI Writer",
-        category: "ai"
+        category: "ai",
+        activeClass: "bg-lime-300",
+        action: $(() => {
+            const event = new Event('prompt-open');
+            document.dispatchEvent(event)
+        })
     },
     {
         icon: <LuText/>,
@@ -182,12 +189,14 @@ export default component$(({ editor, ...props }: PropsOf<'div'> & { editor: NoSe
                                     }
                                 }}
                                 key={i + '-' + j} 
-                                class={
+                                class={[
+                                    item.class ? item.class : '',
                                     index.value == categories.slice(0, i)
                                         .map(c => items.filter(item => item.category == c).length)
                                         .reduce((s, c) => s + c, 0) + j
-                                    ? 'bg-black bg-opacity-10'
-                                    : ''}>
+                                    ? item.activeClass ? item.activeClass : 'bg-black bg-opacity-10'
+                                    : ''
+                                ]}>
                                 {
                                     item.icon
                                 }

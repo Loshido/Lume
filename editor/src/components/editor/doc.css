@@ -149,3 +149,32 @@
     width: 12px;
     height: 12px;
 }
+
+#meta{
+    animation: shows .5s ease-in-out;
+    overflow: hidden;
+}
+#meta > *{
+    animation: slide-in .5s ease-in-out;
+}
+
+@keyframes shows{
+    0% {
+        opacity: 0;
+    }
+    66%{
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in{
+    0%{
+        transform: translateX(100vw);
+    }
+    33%{
+        transform: translateX(100vw);
+    }
+    100%{
+        transform: translateX(0);
+    }
+}
