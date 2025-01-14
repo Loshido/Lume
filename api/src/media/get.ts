@@ -13,7 +13,29 @@ interface Media {
 }
 
 export default new Elysia()
-    .get('/media', async ({ set }) => {
+    .get('/media', async ({ set, query: { id } }) => {
+        if(id) {
+            const client = await sql();
+            try {
+                const response = await client.query<Media>(
+                    `SELECT id, description, origin, createdat 
+                    FROM media
+                    WHERE id = $1;`, 
+                    [ id ]);
+                client.release();
+                if(response.rowCount && response.rowCount > 0) {
+                    return response.rows;
+                } else {
+                    set.status = 404
+                    return null;
+                }
+            } catch(err) {
+                client.release()
+                set.status = 500;
+                return null
+            }
+        }
+
         // cache layer
         const data = await uncache<Media[]>(`/media`, async (cache) => {
             const client = await sql();
@@ -55,6 +77,9 @@ export default new Elysia()
             ),
             401: t.Null()
         },
+        query: t.Object({
+            id: t.Optional(t.String())
+        }),
         detail: {
             summary: '/media',
             description: 'Get files from the store',

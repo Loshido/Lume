@@ -1,8 +1,9 @@
 import { component$, useStore } from "@builder.io/qwik";
-import { DocumentHead, Link } from "@builder.io/qwik-city";
+import { DocumentHead, Link, useNavigate } from "@builder.io/qwik-city";
 import { LuArrowLeft, LuCalendarPlus, LuFileInput, LuUser } from "@qwikest/icons/lucide";
 
 export default component$(() => {
+    const nav = useNavigate()
     const media = useStore({
         description: '',
         date: new Date()
@@ -102,7 +103,11 @@ export default component$(() => {
                             body: form
                         });
 
-                        console.info(response)
+                        if(response.status == 200) {
+                            nav('/dash/media')
+                        } else {
+                            console.error(response)
+                        }
                     }}>
                     Insert
                 </div>

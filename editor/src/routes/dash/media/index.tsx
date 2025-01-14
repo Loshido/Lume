@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { DocumentHead, Link } from "@builder.io/qwik-city";
 import { LuArrowDownNarrowWide, LuPlus, LuRefreshCcw } from "@qwikest/icons/lucide";
 
