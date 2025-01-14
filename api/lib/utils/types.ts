@@ -14,7 +14,7 @@ export interface Article {
     id: string,
     title: string,
     description: string,
-    content: ArticleData,
+    data: ArticleData,
     createdat: Date,
     updatedat: Date,
     draft: boolean

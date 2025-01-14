@@ -29,7 +29,7 @@ const extension = [
 ]
 
 interface Response {
-    content: {
+    data: {
         head: Record<string, string>[],
         content: any[]
     }
@@ -43,14 +43,14 @@ export default new Elysia()
         
                 try {
                     const response = await client.query<Response>(`
-                        SELECT content 
+                        SELECT data 
                         FROM articles
                         WHERE collection = $1 AND id = $2`, 
                         [ params.collection, params.article ]);
                     client.release()
                     
                     if(response.rowCount && response.rowCount > 0) {
-                        const content = response.rows[0].content.content
+                        const content = response.rows[0].data.content
                         const html = generateHTML({
                             type: 'doc',
                             content

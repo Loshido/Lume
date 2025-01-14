@@ -3,7 +3,7 @@ export interface Article{
     id: string,
     title: string,
     description: string,
-    content: {
+    data: {
         head: Record<string, string>[],
         content: any[]
     },

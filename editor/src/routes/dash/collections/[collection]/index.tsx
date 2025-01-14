@@ -62,19 +62,23 @@ export default component$(() => {
     return <>
         <section class="flex flex-col gap-2 h-fit">
             <div>
+                <p class="text-xs text-black text-opacity-25">
+                    <span>
+                        /collections/
+                    </span>
+                    <span 
+                        class={option.collection.edition ? 'text-black text-opacity-100 outline-none' : ''}
+                        contentEditable={option.collection.edition ? 'true' : 'false'}
+                        id="id">
+                        { collection.value.name }
+                    </span>
+                </p>
                 <h1 class="font-semibold text-3xl">
                     <span id="name"  class="outline-none"
                         contentEditable={option.collection.edition ? 'true' : 'false'}>
                         {
                             collection.value.name
                         }
-                    </span> <span class="text-sm text-black text-opacity-25">
-                        (<span id="id" class="outline-none"
-                            contentEditable={option.collection.edition ? 'true' : 'false'}>
-                            {
-                                collection.value.id
-                            }
-                        </span>)
                     </span>
                 </h1>
                 <p class="font-light text-black text-opacity-50 outline-none" id="description" 

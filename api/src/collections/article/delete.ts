@@ -47,7 +47,7 @@ export default new Elysia().delete('/collections/:collection/:article', async ({
             collection: t.String(),
             id: t.String(),
             title: t.String(),
-            content: t.Object({
+            data: t.Object({
                 head: t.Array(t.Record(t.String(), t.String())),
                 content: t.Array(t.Any()),
             }),

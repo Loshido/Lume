@@ -43,7 +43,7 @@ export default new Elysia()
                 id: t.String(),
                 title: t.String(),
                 description: t.String(),
-                content: t.Object({
+                data: t.Object({
                     head: t.Array(t.Record(t.String(), t.String())),
                     content: t.Array(t.Any()),
                 }),

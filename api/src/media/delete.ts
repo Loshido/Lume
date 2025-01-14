@@ -1,11 +1,8 @@
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
-import fs from "fs";
 import sql from "lib:orm/sql";
 import consola from "consola";
-import { fromEnv } from "lib:utils/etc";
-
-const MEDIA_FOLDER = fromEnv('MEDIA_FOLDER', '../data/media')
+import media from "lib:orm/media";
 
 export default new Elysia()
     .delete('/media', async ({ body, set, cookie: { jwt, refresh } }) => {
@@ -38,8 +35,7 @@ export default new Elysia()
                 return null
             }
 
-            fs.rmSync(MEDIA_FOLDER + `/${body.id}`)
-    
+            await media.delete(body.id)
             set.status = 'OK'
             return body.id
         } catch(e) {

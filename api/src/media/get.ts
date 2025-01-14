@@ -1,11 +1,9 @@
 import Elysia, { t } from "elysia";
 import fs from "fs";
 import consola from "consola";
-import { fromEnv } from "lib:utils/etc";
 import sql from "lib:orm/sql";
 import { uncache } from "lib:orm/cache";
-
-const MEDIA_FOLDER = fromEnv('MEDIA_FOLDER', '../data/media')
+import media from "lib:orm/media";
 
 interface Media {
     id: string,
@@ -64,9 +62,11 @@ export default new Elysia()
     })
     .get('/media/:id', async ({ set, params }) => {
         try {
-            const file = fs.readFileSync(MEDIA_FOLDER + `/${params.id}`);
-
-            return new File([file], params.id)
+            const file = await media.read(params.id);
+            if(!file) {
+                throw new Error('driver failed to read')
+            }
+            return file
         } catch (e) {
             consola.debug(e);
 

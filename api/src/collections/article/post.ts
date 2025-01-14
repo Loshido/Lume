@@ -22,7 +22,7 @@ export default new Elysia()
         
         try {
             const response = await client.query<Article>(`INSERT INTO articles
-                (collection, id, title, description, content, draft) 
+                (collection, id, title, description, data, draft) 
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *`, 
                 [
@@ -30,7 +30,7 @@ export default new Elysia()
                     params.article,
                     body.title,
                     body.description,
-                    JSON.stringify(body.content),
+                    JSON.stringify(body.data),
                     body.draft
                 ]);
             client.release()
@@ -54,7 +54,7 @@ export default new Elysia()
         body: t.Object({
             title: t.String(),
             description: t.String(),
-            content: t.Object({
+            data: t.Object({
                 head: t.Array(t.Record(t.String(), t.String())),
                 content: t.Array(t.Any()),
             }),

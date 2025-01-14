@@ -57,7 +57,10 @@ export default new Elysia().delete('/collections/:collection', async ({ set, par
                     collection: t.String(),
                     id: t.String(),
                     title: t.String(),
-                    content: t.String(),
+                    data: t.Object({
+                        head: t.Array(t.Record(t.String(), t.String())),
+                        content: t.Array(t.Any()),
+                    }),
                     createdat: t.Date(),
                     updatedat: t.Date(),
                     draft: t.Boolean()

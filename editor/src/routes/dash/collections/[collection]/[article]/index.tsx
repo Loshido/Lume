@@ -18,7 +18,7 @@ export default component$(() => {
     const editor = useSignal<NoSerialize<Editor>>()
     const option = useStore({
         saved: true,
-        meta: true
+        meta: false
     })
     useStyles$(doc)
 
@@ -33,7 +33,7 @@ export default component$(() => {
         const data = await response.json();
         article.value = data;
 
-        editor.value = noSerialize(await buildEditor(article.value!.content.content));
+        editor.value = noSerialize(await buildEditor(article.value!.data.content));
         editor.value?.on('update', () => {
             option.saved = false
         })

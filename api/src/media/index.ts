@@ -16,27 +16,27 @@ export default new Elysia({
     .use(post)
     .use(rm)
     .use(get)
-    .onStart(async () => {
-        const client = await sql()
+    // .onStart(async () => {
+    //     const client = await sql()
 
-        const response = await client.query<{ id: string }>(`SELECT id FROM media;`);
-        client.release()
+    //     const response = await client.query<{ id: string }>(`SELECT id FROM media;`);
+    //     client.release()
 
-        const folder = fs.readdirSync(MEDIA_FOLDER, {
-            recursive: true
-        })
+    //     const folder = fs.readdirSync(MEDIA_FOLDER, {
+    //         recursive: true
+    //     })
 
-        if(!response.rowCount || response.rowCount === 0) {
-            for(const file of folder) {
-                fs.rmSync(MEDIA_FOLDER + `/${file}`)
-            }
-            return
-        }
+    //     if(!response.rowCount || response.rowCount === 0) {
+    //         for(const file of folder) {
+    //             fs.rmSync(MEDIA_FOLDER + `/${file}`)
+    //         }
+    //         return
+    //     }
 
-        const distant_files = response.rows.map(v => v.id);
-        for(const file of folder) {
-            if(!distant_files.includes(file.toString())) {
-                fs.rmSync(MEDIA_FOLDER + `/${file}`);
-            }
-        }
-    })
+    //     const distant_files = response.rows.map(v => v.id);
+    //     for(const file of folder) {
+    //         if(!distant_files.includes(file.toString())) {
+    //             fs.rmSync(MEDIA_FOLDER + `/${file}`);
+    //         }
+    //     }
+    // })

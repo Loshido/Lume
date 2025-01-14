@@ -1,11 +1,8 @@
 import Elysia, { t } from "elysia";
 import { factory } from "lib:auth/jwt";
-import fs from "fs";
 import sql from "lib:orm/sql";
 import consola from "consola";
-import { fromEnv } from "lib:utils/etc";
-
-const MEDIA_FOLDER = fromEnv('MEDIA_FOLDER', '../data/media')
+import media from "lib:orm/media";
 
 export default new Elysia()
     .post('/media', async ({ body, set, cookie: { jwt, refresh } }) => {
@@ -44,8 +41,10 @@ export default new Elysia()
                 return null
             }
 
-            const data = await body.file.bytes()
-            fs.writeFileSync(MEDIA_FOLDER + `/${name}`, data);
+            const succeed = await media.write(name, body.file)
+            if(!succeed) {
+                throw new Error('driver failed to write');
+            }
     
             set.status = 'OK'
             return name

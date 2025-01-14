@@ -104,7 +104,7 @@ export default component$(() => {
                                 title: article.title,
                                 description: article.description,
                                 draft: article.draft,
-                                content: {
+                                data: {
                                     head: [],
                                     content: [
                                         {

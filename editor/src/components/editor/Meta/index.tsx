@@ -19,7 +19,7 @@ export default component$(({ article, exit }: Props) => {
         const title = document.getElementById('meta-title')
         const desc = document.getElementById('meta-desc')
 
-        for(const attr of article.content.head) {
+        for(const attr of article.data.head) {
             // deserialization of attr
             meta.push(
                 Object
@@ -65,7 +65,7 @@ export default component$(({ article, exit }: Props) => {
         <hr />
         <section class="my-2">
             <h2 class="text-lg md:text-xl font-medium mb-2">
-                Head<span class="text-sm font-light">, SEO tags and OpenGraph Protocole <i 
+                Head<span class="text-sm font-light">, SEO tags and OpenGraph Protocol <i 
                     title="Note that the description above is already served as a description meta tag.">
                     <LuHelpCircle class="inline"/>
                 </i></span>
@@ -168,12 +168,12 @@ export default component$(({ article, exit }: Props) => {
                     
                     if(metas.reduce((previous, tag, i) => 
                         previous || (
-                            Object.entries(article.content.head[i]).reduce((p, [k, v]) =>
+                            Object.entries(article.data.head[i]).reduce((p, [k, v]) =>
                                 p || (!(k in tag) || v != tag[k]), 
                             false)
                         ), false)) {
-                        update.content = {
-                            content: article.content.content,
+                        update.data = {
+                            content: article.data.content,
                             head: metas
                         }
                     }
